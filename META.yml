@@ -1,10 +1,12 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Geo-GeoNames
-version:      0.02
+version:      0.03
 version_from: lib/Geo/GeoNames.pm
 installdirs:  site
 requires:
+    LWP:                           5.805
+    XML::Simple:                   2.13
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.30_01

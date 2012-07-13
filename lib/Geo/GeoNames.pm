@@ -1,4 +1,4 @@
-# $Id: GeoNames.pm 19 2006-11-30 23:32:57Z per.henrik.johansen $
+# $Id: GeoNames.pm 21 2006-12-03 21:01:46Z per.henrik.johansen $
 package Geo::GeoNames;
 
 use 5.008006;
@@ -10,10 +10,8 @@ use LWP;
 
 use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
-our $VERSION = '0.02';
-$DEBUG = 0;
+our $VERSION = '0.03';
 $GNURL = 'http://ws.geonames.org';
-$CACHE = '';
 
 %searches = (
 	search => 'search?',
@@ -76,7 +74,7 @@ sub new {
 	(exists($hash{url})) ? $self->{url} = $hash{url} : $self->{url} = $GNURL;
 	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
 	(exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
-	
+	$self->{_functions} = \%searches;
     bless $self, $class;
     return $self;
 }
@@ -158,7 +156,6 @@ sub _do_search {
 	my $searchtype = shift;
 	my $request = $self->_build_request($searchtype, @_);
 	my $result = $self->_request($request);
-	#croak $result;
 	return($self->_parse_result($result));
 }
 
@@ -168,29 +165,19 @@ sub geocode {
 	return($self->search(q=> $q));
 }
 
-sub search {
+sub AUTOLOAD {
 	my $self = shift;
-	return($self->_do_search('search', @_));
+	my $type = ref($self) || croak "$self is not an object";
+	my $name = our $AUTOLOAD;
+	$name =~ s/.*://;
+	unless (exists $self->{_functions}->{$name}) {
+		croak "No such method '$AUTOLOAD'";
+	}
+	return($self->_do_search($name, @_));
 }
 
-sub postalcode_search {
-	my $self = shift;
-	return($self->_do_search('postalcode_search', @_));
-}
+sub DESTROY {
 
-sub find_nearby_postalcodes{
-	my $self = shift;
-	return($self->_do_search('find_nearby_postalcodes', @_));
-}
-
-sub find_nearby_placename {
-	my $self = shift;
-	return($self->_do_search('find_nearby_placename', @_));
-}
-
-sub postalcode_country_info {
-	my $self = shift;
-	return($self->_do_search('postalcode_country_info', @_));
 }
 1;
 __END__

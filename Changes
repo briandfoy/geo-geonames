@@ -1,8 +1,13 @@
-$Id: Changes 18 2006-11-30 22:33:54Z per.henrik.johansen $
+$Id: Changes 27 2006-12-04 03:11:54Z per.henrik.johansen $
 
 Revision history for Perl extension Geo::GeoNames.
 
-0.02 $LastChangedDate: 2006-11-30 22:33:54Z $
+0.03  2006-12-04
+	- Use AUTOLOADER to find method names (they all looked the same)
+	- Use PREREQ_PM in Makefile.PL. Added the versions on my system, since
+	  these are the only I know work for sure.
+
+0.02  2006-11-30
 	- Added function find_nearby_postalcodes
 	- Added function find_nearby_placename
 	- Added function postalcode_country_info
