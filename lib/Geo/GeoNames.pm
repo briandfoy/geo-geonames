@@ -13,7 +13,7 @@ use JSON;
 use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
 our $VERSION = '0.06';
-$GNURL = 'http://ws.geonames.org';
+$GNURL = 'http://api.geonames.org';
 
 %searches = (
 	cities => 'cities?',
@@ -59,14 +59,16 @@ $GNURL = 'http://ws.geonames.org';
 				type		=> 'o',
 				style		=> 'o',
 				isNameRequired	=> 'o',
-				tag		=> 'o'
+				tag		=> 'o',
+				username => 'r',
 				},
 	postalcode_search => {
 				postalcode	=> 'rc',
 				placename	=> 'rc',
 				country		=> 'o',
 				maxRows		=> 'o',
-				style		=> 'o'
+				style		=> 'o',
+				username => 'r',
 				},
 	find_nearby_postalcodes => {
 				lat		=> 'r',
@@ -75,6 +77,7 @@ $GNURL = 'http://ws.geonames.org';
 				maxRows		=> 'o',
 				style		=> 'o',
 				country		=> 'o',
+				username => 'r',
 				},
 	postalcode_country_info => {
 				},
@@ -83,19 +86,23 @@ $GNURL = 'http://ws.geonames.org';
 				lng		=> 'r',
 				radius		=> 'o',
 				style		=> 'o',
-				maxRows		=> 'o'
+				maxRows		=> 'o',
+				username => 'r',
 				},
 	find_nearest_address => {
 				lat		=> 'r',
-				lng		=> 'r'
+				lng		=> 'r',
+				username => 'r',
 				},
 	find_nearest_intersection => {
 				lat		=> 'r',
-				lng		=> 'r'
+				lng		=> 'r',
+				username => 'r',
 				},
 	find_nearby_streets => {
 				lat		=> 'r',
-				lng		=> 'r'
+				lng		=> 'r',
+				username => 'r',
 				},
 	find_nearby_wikipedia => {
 				lang		=> 'o',
@@ -103,19 +110,22 @@ $GNURL = 'http://ws.geonames.org';
 				lng		=> 'r',
 				radius		=> 'o',
 				maxRows		=> 'o',
-				country		=> 'o'
+				country		=> 'o',
+				username => 'r',
 				},
 	find_nearby_wikipedia_by_postalcode => {
 				postalcode 	=> 'r',
 				country		=> 'r',
 				radius		=> 'o',
-				maxRows		=> 'o'
+				maxRows		=> 'o',
+				username => 'r',
 				},
 	wikipedia_search => {
 				q		=> 'r',
 				lang		=> 'o',
 				title		=> 'o',
-				maxRows		=> 'o'
+				maxRows		=> 'o',
+				username => 'r',
 				},
 	wikipedia_bounding_box => {
 				south		=> 'r',
@@ -123,21 +133,26 @@ $GNURL = 'http://ws.geonames.org';
 				east		=> 'r',
 				west		=> 'r',
 				lang		=> 'o',
-				maxRows		=> 'o'
+				maxRows		=> 'o',
+				username => 'r',
+
 				},
 	country_info => {
 				country		=> 'o',
-				lang		=> 'o'
+				lang		=> 'o',
+				username => 'r',
 				},
 	country_code => {
 				lat		=> 'r',
 				lng		=> 'r',
 				lang		=> 'o',
-				radius		=> 'o'
+				radius		=> 'o',
+				username => 'r',
 	},
 	find_nearby_weather => {
 				lat		=> 'r',
-				lng		=> 'r'
+				lng		=> 'r',
+				username => 'r',
 	},
 	cities => {
         			north           => 'r',
@@ -145,7 +160,8 @@ $GNURL = 'http://ws.geonames.org';
             			east            => 'r',
            	 		west            => 'r',
             			lang            => 'o',
-            			maxRows         => 'o'
+            			maxRows         => 'o',
+				username => 'r',
 	},
    	earthquakes => {
             			north           => 'r',
@@ -154,22 +170,40 @@ $GNURL = 'http://ws.geonames.org';
             			west            => 'r',
             			date            => 'o',
             			minMagnutide    => 'o',
-            			maxRows         => 'o'
+            			maxRows         => 'o',
+				username => 'r',
         }
 );
 
 sub new {
-    my $class = shift;
-    my $self = shift;
-    my %hash = @_;
+	my( $class, %hash ) = @_;
+
+	my $self = bless { _functions => \%searches }, $class;
+	
+	croak <<"HERE";
+You must specify a GeoNames username to use Geo::GeoNames.
+See http://www.geonames.org/export/web-services.html
+HERE
+
+    $self->username( $hash{username} );
 
     (exists($hash{url})) ? $self->{url} = $hash{url} : $self->{url} = $GNURL;
-    (exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
+   (exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
     (exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
     $self->{_functions} = \%searches;
     bless $self, $class;
     return $self;
 }
+
+sub username {
+	my( $self, $username ) = @_;
+	
+	if( @_ == 2 ) {
+		$self->{username} = $username;
+		}
+	
+	$self->{username};
+	}
 
 sub _build_request {
     my $self = shift;
@@ -370,13 +404,18 @@ If more than one match is found, a list of locations will be returned.
 
 =item new 
 
-  $geo = Geo::GeoNames->new()
+  $geo = Geo::GeoNames->new( username => '...' )
   $geo = Geo::GeoNames->new(url => $url)
 
 Constructor for Geo::GeoNames. It returns a reference to an Geo::GeoNames object.
 You may also pass the url of the webservices to use. The default value is
-http://ws.geonames.org and is the only url, to my knowledge, that provides
-the services needed by this module.
+http://api.geonames.org and is the only url, to my knowledge, that provides
+the services needed by this module. The username parameter is required.
+
+=item username( $username )
+
+With a single argument, set the GeoNames username and return that username.
+With no arguments, return the username.
 
 =item geocode($placename)
 
