@@ -9,12 +9,12 @@ use XML::Simple;
 use LWP;
 use JSON;
 
-use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
+use vars qw($DEBUG $CACHE);
 
-our $VERSION = '0.06';
-$GNURL = 'http://api.geonames.org';
+our $VERSION = '0.07';
+our $GNURL = 'http://api.geonames.org';
 
-%searches = (
+our %searches = (
 	cities => 'cities?',
 	country_code => 'countrycode?type=xml&',
 	country_info => 'countryInfo?', 
@@ -39,7 +39,7 @@ $GNURL = 'http://api.geonames.org';
 #	rc	= required - only one of the fields marked with rc is allowed. At least one must be present
 #	om	= optional, multible entries allowed
 #	d	= depreciated - will be removed in later versions
-%valid_parameters = (
+our %valid_parameters = (
 	search => {
 				q    => 'rc',
 				name    => 'rc',
