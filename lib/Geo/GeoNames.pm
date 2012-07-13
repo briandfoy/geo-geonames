@@ -205,6 +205,16 @@ sub username {
 	$self->{username};
 	}
 
+sub url {
+	my( $self, $url ) = @_;
+
+	if( @_ == 2 ) {
+		$self->{url} = $url;
+		}
+
+	$self->{url};
+	}
+
 sub _build_request {
 	my $self = shift;
 	my $request = shift;
@@ -436,6 +446,11 @@ username parameter is required.
 
 With a single argument, set the GeoNames username and return that
 username. With no arguments, return the username.
+
+=item url( $url )
+
+With a single argument, set the GeoNames url and return that
+url. With no arguments, return the url.
 
 =item geocode($placename)
 
