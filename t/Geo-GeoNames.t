@@ -21,7 +21,9 @@ use Data::Dumper;
 
 package main;
 
-my $geo = new Geo::GeoNames();
+my $geo = Geo::GeoNames->new(
+	username => $ENV{GEONAMES_USER}
+	);
 ok(defined($geo) && ref $geo eq 'Geo::GeoNames', 'new()');
 
 my $result = $geo->search(q => "Oslo", maxRows => 3, style => "FULL");
@@ -137,7 +139,7 @@ ok(exists($result->[0]->{lng})	                 		, 'lng exists in result');
 
 #diag(Data::Dumper->Dump($result));
 
-$geo = new Geo::GeoNames::Test();
+$geo = Geo::GeoNames::Test->new( username => $ENV{GEONAMES_USER} );
 $result = $geo->geocode('Fredrikstad');
 ok(defined($result)						, 'geocode Fredrikstad');
 ok(ref($result) eq "ARRAY"					, 'result is array ref');
