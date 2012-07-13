@@ -1,4 +1,4 @@
-# $Id: GeoNames.pm 21 2006-12-03 21:01:46Z per.henrik.johansen $
+# $Id: GeoNames.pm 30 2007-07-03 18:54:57Z per.henrik.johansen $
 package Geo::GeoNames;
 
 use 5.008006;
@@ -10,7 +10,7 @@ use LWP;
 
 use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 $GNURL = 'http://ws.geonames.org';
 
 %searches = (
@@ -18,7 +18,10 @@ $GNURL = 'http://ws.geonames.org';
 	postalcode_search => 'postalCodeSearch?',
 	find_nearby_postalcodes => 'findNearbyPostalCodes?',
 	postalcode_country_info => 'postalCodeCountryInfo?',
-	find_nearby_placename => 'findNearbyPlaceName?'
+	find_nearby_placename => 'findNearbyPlaceName?',
+	find_nearest_address => 'findNearestAddress?',
+	find_nearest_intersection => 'findNearestIntersection?',
+	find_nearby_streets => 'findNearbyStreets?'
 );
 
 # 	r 	= required
@@ -63,7 +66,19 @@ $GNURL = 'http://ws.geonames.org';
 				lng			=> 'r',
 				radius		=> 'o',
 				style		=> 'o'
-				}
+				},
+	find_nearest_address => {
+				lat			=> 'r',
+				lng			=> 'r'
+				},
+	find_nearest_intersection => {
+				lat			=> 'r',
+				lng			=> 'r'
+				},
+	find_nearby_streets => {
+				lat			=> 'r',
+				lng			=> 'r'
+				} 				 						
 );
 
 sub new {
@@ -125,6 +140,13 @@ sub _parse_result {
 		}
 		$i++;
 	} 
+	foreach my $address (@{$xml->{address}}) {
+		foreach my $attribute (%{$address}) {
+			next if !defined($address->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $address->{$attribute}->[0];
+		}
+		$i++;
+	} 
 	foreach my $code (@{$xml->{code}}) {
 		foreach my $attribute (%{$code}) {
 			next if !defined($code->{$attribute}->[0]);
@@ -136,6 +158,20 @@ sub _parse_result {
 		foreach my $attribute (%{$country}) {
 			next if !defined($country->{$attribute}->[0]);
 			$result[$i]->{$attribute} = $country->{$attribute}->[0];
+		}
+		$i++;
+	} 
+	foreach my $intersection (@{$xml->{intersection}}) {
+		foreach my $attribute (%{$intersection}) {
+			next if !defined($intersection->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $intersection->{$attribute}->[0];
+		}
+		$i++;
+	} 
+	foreach my $street_segment (@{$xml->{streetSegment}}) {
+		foreach my $attribute (%{$street_segment}) {
+			next if !defined($street_segment->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $street_segment->{$attribute}->[0];
 		}
 		$i++;
 	} 
@@ -275,6 +311,54 @@ this function.
 For a thorough descriptions of the arguments, see 
 http://www.geonames.org/export
 
+=item find_nearest_address(arg => $arg)
+
+Reverse lookup for closest address to a given coordinate. Valid names for
+B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough descriptions of the arguments, see 
+http://www.geonames.org/maps/reverse-geocoder.html
+
+US only.
+
+=item find_nearest_intersection(arg => $arg)
+
+Reverse lookup for closest intersection to a given coordinate. Valid names for
+B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough descriptions of the arguments, see 
+http://www.geonames.org/maps/reverse-geocoder.html
+
+US only.
+
+=item find_nearby_streets(arg => $arg)
+
+Reverse lookup for closest streets to a given coordinate. Valid names for
+B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough descriptions of the arguments, see 
+http://www.geonames.org/maps/reverse-geocoder.html
+
+US only.
+
 =item postalcode_search(arg => $arg)
 
 Searches for information about a postalcode. Valid names for B<arg> are as follows: 
@@ -352,12 +436,13 @@ yields the result (after doing a Data::Dumper->Dump($result);):
          };
 
 The elements in the hashes depends on which B<style> is passed to the method, but
-will always contain B<name>, B<lng>, and B<lat> except for postalcode_country_info().
+will always contain B<name>, B<lng>, and B<lat> except for postalcode_country_info(),
+find_nearest_address(), find_nearest_intersection(), and find_nearby_streets().
 
 =head1 BUGS
 
 Not a bug, but the GeoNames services expects placenames to be
-UTF-8 encoded, and all date recieved from the webservices are
+UTF-8 encoded, and all data recieved from the webservices are
 also UTF-8 encoded. So make sure that strings are encoded/decoded
 based on the correct encoding.
 
@@ -372,11 +457,11 @@ at http://code.google.com/p/geo-geonames
 
 =head1 AUTHOR
 
-Per Henrik Johansen, E<lt>perhenrik@cpan.orgE<gt>
+Per Henrik Johansen, E<lt>per.henrik.johansen@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006 by Per Henrik Johansen
+Copyright (C) 2007 by Per Henrik Johansen
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,

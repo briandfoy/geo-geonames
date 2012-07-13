@@ -1,9 +1,22 @@
-$Id: README 24 2006-12-03 23:42:43Z per.henrik.johansen $
+$Id: README 30 2007-07-03 18:54:57Z per.henrik.johansen $
+
+Geo-GeoNames version 0.04
+=========================
+
+Added support for 3 new reverse geocoding functions:
+1. find nearest address
+2. find nearest intersection
+3. find nearby streets
+
+These will only work for US coordinates.
+
+Thanks to Wes Gurney for pointing out that they were
+missing from the module.
 
 Geo-GeoNames version 0.03
 =========================
 
-Maintainance realease. Fiked Makefile.PL and now
+Maintainance realease. Fixed Makefile.PL and now
 use AUTOLOADER in the module.
 
 Geo-GeoNames version 0.02

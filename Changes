@@ -1,7 +1,12 @@
-$Id: Changes 27 2006-12-04 03:11:54Z per.henrik.johansen $
+$Id: Changes 30 2007-07-03 18:54:57Z per.henrik.johansen $
 
 Revision history for Perl extension Geo::GeoNames.
 
+0.04  2007-07-03	
+	- Added function find_nearest_address
+	- Added function find_nearest_intersection
+	- Added function find_nearby_streets
+	
 0.03  2006-12-04
 	- Use AUTOLOADER to find method names (they all looked the same)
 	- Use PREREQ_PM in Makefile.PL. Added the versions on my system, since
