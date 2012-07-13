@@ -4,3 +4,4 @@ tar.gz$
 Makefile$
 \.bak$
 blib\b
+\.tar$
