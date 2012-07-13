@@ -181,7 +181,7 @@ sub new {
 
 	my $self = bless { _functions => \%searches }, $class;
 	
-	croak <<"HERE";
+	croak <<"HERE" unless exists $hash{username};
 You must specify a GeoNames username to use Geo::GeoNames.
 See http://www.geonames.org/export/web-services.html
 HERE
