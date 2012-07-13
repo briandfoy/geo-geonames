@@ -1,4 +1,3 @@
-# $Id: Geo-GeoNames.t 42 2008-03-25 21:31:07Z per.henrik.johansen $
 # Before `make install' is performed this script should be runnable with
 # `make test'. After `make install' it should work as `perl Geo-GeoNames.t'
 
