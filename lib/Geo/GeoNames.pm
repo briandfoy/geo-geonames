@@ -1,4 +1,3 @@
-# $Id: GeoNames.pm 42 2008-03-25 21:31:07Z per.henrik.johansen $
 package Geo::GeoNames;
 
 use Data::Dumper;
