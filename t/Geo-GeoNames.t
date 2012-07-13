@@ -6,7 +6,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 34;
+use Test::More tests => 60;
 BEGIN { use_ok('Geo::GeoNames') };
 #use Data::Dumper;
 #########################
@@ -70,6 +70,42 @@ ok(defined($result)								, 'nearest street');
 ok(ref($result) eq "ARRAY"						, 'result is array ref');
 ok(exists($result->[0]->{line})					, 'line exists in result');
 ok(exists($result->[0]->{name})					, 'name exists in result');
+
+$result = $geo->find_nearby_wikipedia(lng => "9", lat => "47");
+ok(defined($result)								, 'nearby wikipedia');
+ok(ref($result) eq "ARRAY"						, 'result is array ref');
+ok(exists($result->[0]->{title})				, 'title exists in result');
+ok(exists($result->[0]->{lng})					, 'lng exists in result');
+ok(exists($result->[0]->{lat})					, 'lat exists in result');
+
+$result = $geo->find_nearby_wikipedia_by_postalcode(postalcode => "8775", country => "CH");
+ok(defined($result)								, 'nearby wikipedia postalcode');
+ok(ref($result) eq "ARRAY"						, 'result is array ref');
+ok(exists($result->[0]->{title})				, 'title exists in result');
+ok(exists($result->[0]->{lng})					, 'lng exists in result');
+ok(exists($result->[0]->{lat})					, 'lat exists in result');
+
+$result = $geo->wikipedia_search(q => "london");
+ok(defined($result)								, 'wikipedia search');
+ok(ref($result) eq "ARRAY"						, 'result is array ref');
+ok(exists($result->[0]->{title})				, 'title exists in result');
+ok(exists($result->[0]->{lng})					, 'lng exists in result');
+ok(exists($result->[0]->{lat})					, 'lat exists in result');
+
+$result = $geo->wikipedia_bounding_box(north => "44.1", south => "-9.9", east => "-22.4", west => "55.2");
+ok(defined($result)								, 'wikipedia bounding box');
+ok(ref($result) eq "ARRAY"						, 'result is array ref');
+ok(exists($result->[0]->{title})				, 'title exists in result');
+ok(exists($result->[0]->{lng})					, 'lng exists in result');
+ok(exists($result->[0]->{lat})					, 'lat exists in result');
+
+$result = $geo->country_info();
+ok(defined($result)								, 'wikipedia bounding box');
+ok(ref($result) eq "ARRAY"						, 'result is array ref');
+ok(exists($result->[0]->{bBoxWest})				, 'bBoxWest exists in result');
+ok(exists($result->[0]->{bBoxNorth})			, 'bBoxNorth exists in result');
+ok(exists($result->[0]->{bBoxEast})				, 'bBoxEast exists in result');
+ok(exists($result->[0]->{bBoxSouth})			, 'bBoxSouth exists in result');
 
 #diag(Data::Dumper->Dump($result));
 

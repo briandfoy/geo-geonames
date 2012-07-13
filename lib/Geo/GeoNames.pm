@@ -1,6 +1,7 @@
 # $Id: GeoNames.pm 30 2007-07-03 18:54:57Z per.henrik.johansen $
 package Geo::GeoNames;
 
+use Data::Dumper;
 use 5.008006;
 use strict;
 use warnings;
@@ -10,7 +11,7 @@ use LWP;
 
 use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 $GNURL = 'http://ws.geonames.org';
 
 %searches = (
@@ -21,7 +22,12 @@ $GNURL = 'http://ws.geonames.org';
 	find_nearby_placename => 'findNearbyPlaceName?',
 	find_nearest_address => 'findNearestAddress?',
 	find_nearest_intersection => 'findNearestIntersection?',
-	find_nearby_streets => 'findNearbyStreets?'
+	find_nearby_streets => 'findNearbyStreets?',
+	find_nearby_wikipedia => 'findNearbyWikipedia?',
+	find_nearby_wikipedia_by_postalcode => 'findNearbyWikipedia?',
+	wikipedia_search => 'wikipediaSearch?',
+	wikipedia_bounding_box => 'wikipediaBoundingBox?',
+	country_info => 'countryInfo?' 
 );
 
 # 	r 	= required
@@ -78,7 +84,38 @@ $GNURL = 'http://ws.geonames.org';
 	find_nearby_streets => {
 				lat			=> 'r',
 				lng			=> 'r'
-				} 				 						
+				},
+	find_nearby_wikipedia => {
+				lang		=> 'o',
+				lat			=> 'r',
+				lng			=> 'r',
+				radius		=> 'o',
+				maxRows		=> 'o',
+				country		=> 'o'
+				},
+	find_nearby_wikipedia_by_postalcode => {
+				postalcode 	=> 'r',
+				country		=> 'r',
+				radius		=> 'o',
+				maxRows		=> 'o'
+				},
+	wikipedia_search => {
+				q			=> 'r',
+				lang		=> 'o',
+				maxRows		=> 'o'
+				},
+	wikipedia_bounding_box => {
+				south		=> 'r',
+				north		=> 'r',
+				east		=> 'r',
+				west		=> 'r',
+				lang		=> 'o',
+				maxRows		=> 'o'
+				},
+	country_info => {
+				country		=> 'o',
+				lang		=> 'o'
+				}			
 );
 
 sub new {
@@ -133,48 +170,20 @@ sub _parse_result {
 	my $xml = $xmlsimple->XMLin($geonamesresponse, KeyAttr=>[], ForceArray => 1);
 
 	my $i = 0;
-	foreach my $geoname (@{$xml->{geoname}}) {
-		foreach my $attribute (%{$geoname}) {
-			next if !defined($geoname->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $geoname->{$attribute}->[0];
+	foreach my $element (keys %{$xml}) {
+		if ($element eq 'status') {
+			carp "ERROR: " . $xml->{$element}->[0]->{message};
 		}
-		$i++;
-	} 
-	foreach my $address (@{$xml->{address}}) {
-		foreach my $attribute (%{$address}) {
-			next if !defined($address->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $address->{$attribute}->[0];
+		next if (ref($xml->{$element}) ne "ARRAY");
+		foreach my $list (@{$xml->{$element}}) {
+			next if (ref($list) ne "HASH");
+			foreach my $attribute (%{$list}) {
+				next if !defined($list->{$attribute}->[0]);
+				$result[$i]->{$attribute} = $list->{$attribute}->[0];
+			}
+			$i++;
 		}
-		$i++;
-	} 
-	foreach my $code (@{$xml->{code}}) {
-		foreach my $attribute (%{$code}) {
-			next if !defined($code->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $code->{$attribute}->[0];
-		}
-		$i++;
-	} 
-	foreach my $country (@{$xml->{country}}) {
-		foreach my $attribute (%{$country}) {
-			next if !defined($country->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $country->{$attribute}->[0];
-		}
-		$i++;
-	} 
-	foreach my $intersection (@{$xml->{intersection}}) {
-		foreach my $attribute (%{$intersection}) {
-			next if !defined($intersection->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $intersection->{$attribute}->[0];
-		}
-		$i++;
-	} 
-	foreach my $street_segment (@{$xml->{streetSegment}}) {
-		foreach my $attribute (%{$street_segment}) {
-			next if !defined($street_segment->{$attribute}->[0]);
-			$result[$i]->{$attribute} = $street_segment->{$attribute}->[0];
-		}
-		$i++;
-	} 
+	}
 	return \@result;
 }
 
@@ -249,6 +258,7 @@ Provides a perl interface to the webservices found at
 http://ws.geonames.org. That is, given a given placename or
 postalcode, the module will look it up and return more information
 (longitude, lattitude, etc) for the given placename or postalcode.
+Wikipedia lookups are also supported.
 If more than one match is found, a list of locations will be returned.  
 
 =head1 METHODS
@@ -378,6 +388,7 @@ http://www.geonames.org/export
 =item find_nearby_postalcodes(arg => $arg)
 
 Reverse lookup for postalcodes. Valid names for B<arg> are as follows:
+
   lat => $lat
   lng => $lng
   radius => $radius
@@ -395,6 +406,79 @@ http://www.geonames.org/export
 
 Returns a list of all postalcodes found on GeoNames. This function
 takes no arguments.
+
+=item country_info(arg => $arg)
+
+Returns country information. Valid names for B<arg> are as follows:
+
+  country => $country
+  lang => $lang
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item find_nearby_wikipedia(arg => $arg)
+
+Reverse lookup for Wikipedia articles. Valid names for B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+  radius => $radius
+  maxRows => $maxrows
+  lang => $lang
+  country => $country
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item find_nearby_wikipediaby_postalcode(arg => $arg)
+
+Reverse lookup for Wikipedia articles. Valid names for B<arg> are as follows:
+
+  postalcode => $postalcode
+  country => $country
+  radius => $radius
+  maxRows => $maxrows
+
+Both B<postalcode> and B<country> must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item wikipedia_search(arg => $arg)
+
+Searches for Wikipedia articles. Valid names for B<arg> are as follows:
+
+  q => $placename
+  maxRows => $maxrows
+  lang => $lang
+
+B<q> must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item wikipedia_bounding_box(arg => $arg)
+
+Searches for Wikipedia articles. Valid names for B<arg> are as follows:
+
+  south => $south
+  north => $north
+  east => $east
+  west => $west
+  lang => $lang
+  maxRows => $maxrows
+
+B<south>, B<north>, B<east>, and B<west> and must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
 
 =back
 
@@ -445,6 +529,9 @@ Not a bug, but the GeoNames services expects placenames to be
 UTF-8 encoded, and all data recieved from the webservices are
 also UTF-8 encoded. So make sure that strings are encoded/decoded
 based on the correct encoding.
+
+Please reports any bugs found or feature requests to
+http://code.google.com/p/geo-geonames/issues/list
 
 =head1 SEE ALSO
 

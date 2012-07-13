@@ -3,6 +3,15 @@ $Id: README 30 2007-07-03 18:54:57Z per.henrik.johansen $
 Geo-GeoNames version 0.04
 =========================
 
+Added support for reverse geocoding of wikipedia 
+articles and lookup of country info.
+
+Thanks to Gordon Bower for making the initial request
+for these to be added.
+
+Geo-GeoNames version 0.04
+=========================
+
 Added support for 3 new reverse geocoding functions:
 1. find nearest address
 2. find nearest intersection

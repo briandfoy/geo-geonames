@@ -2,6 +2,14 @@ $Id: Changes 30 2007-07-03 18:54:57Z per.henrik.johansen $
 
 Revision history for Perl extension Geo::GeoNames.
 
+0.05  2007-07-05
+	- Added function find_nearby_wikipedia
+	- Added function find_nearby_wikipedia_by_postalcode
+	- Added function wikipedia_search
+	- Added function wikipedia_bounding_box
+	- Added function country_info
+	- Some refactoring
+	
 0.04  2007-07-03	
 	- Added function find_nearest_address
 	- Added function find_nearest_intersection
