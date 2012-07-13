@@ -1,6 +1,22 @@
-$Id: README 30 2007-07-03 18:54:57Z per.henrik.johansen $
+$Id: README 42 2008-03-25 21:31:07Z per.henrik.johansen $
 
-Geo-GeoNames version 0.04
+Geo-GeoNames version 0.06
+==========================
+
+Added JSON support so we can implement all of GeoNames methods 
+at some point.
+
+Added 4 new functions:
+1. cities
+2. country_code
+3. earthquakes
+4. find_nearby_weather
+
+Fixed some bugs.
+
+Fixed bug id 30438.
+
+Geo-GeoNames version 0.05
 =========================
 
 Added support for reverse geocoding of wikipedia 

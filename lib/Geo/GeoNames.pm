@@ -1,4 +1,4 @@
-# $Id: GeoNames.pm 30 2007-07-03 18:54:57Z per.henrik.johansen $
+# $Id: GeoNames.pm 42 2008-03-25 21:31:07Z per.henrik.johansen $
 package Geo::GeoNames;
 
 use Data::Dumper;
@@ -8,47 +8,58 @@ use warnings;
 use Carp;
 use XML::Simple;
 use LWP;
+use JSON;
 
 use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 $GNURL = 'http://ws.geonames.org';
 
 %searches = (
-	search => 'search?',
-	postalcode_search => 'postalCodeSearch?',
-	find_nearby_postalcodes => 'findNearbyPostalCodes?',
-	postalcode_country_info => 'postalCodeCountryInfo?',
+	cities => 'cities?',
+	country_code => 'countrycode?type=xml&',
+	country_info => 'countryInfo?', 
+	earthquakes => 'earthquakesJSON?',
 	find_nearby_placename => 'findNearbyPlaceName?',
-	find_nearest_address => 'findNearestAddress?',
-	find_nearest_intersection => 'findNearestIntersection?',
+	find_nearby_postalcodes => 'findNearbyPostalCodes?',
 	find_nearby_streets => 'findNearbyStreets?',
+	find_nearby_weather => 'findNearByWeatherXML?',
 	find_nearby_wikipedia => 'findNearbyWikipedia?',
 	find_nearby_wikipedia_by_postalcode => 'findNearbyWikipedia?',
-	wikipedia_search => 'wikipediaSearch?',
+	find_nearest_address => 'findNearestAddress?',
+	find_nearest_intersection => 'findNearestIntersection?',
+	postalcode_country_info => 'postalCodeCountryInfo?',
+	postalcode_search => 'postalCodeSearch?',
+	search => 'search?',
 	wikipedia_bounding_box => 'wikipediaBoundingBox?',
-	country_info => 'countryInfo?' 
+	wikipedia_search => 'wikipediaSearch?',
 );
 
 # 	r 	= required
 #	o	= optional
 #	rc	= required - only one of the fields marked with rc is allowed. At least one must be present
 #	om	= optional, multible entries allowed
+#	d	= depreciated - will be removed in later versions
 %valid_parameters = (
-	search => 	{
-				q			=> 'rc',
+	search => {
+				q		=> 'rc',
 				name		=> 'rc',
 				name_equals	=> 'rc,',
 				maxRows 	=> 'o',
 				startRow	=> 'o',
 				country		=> 'om',
+				continentCode	=> 'o',
 				adminCode1	=> 'o',
 				adminCode2	=> 'o',
 				adminCode3	=> 'o',
-				fclass		=> 'om',
+				fclass		=> 'omd',
+				featureClass	=> 'om',
+				featureCode	=> 'om',
 				lang		=> 'o',
 				type		=> 'o',
-				style		=> 'o'
+				style		=> 'o',
+				isNameRequired	=> 'o',
+				tag		=> 'o'
 				},
 	postalcode_search => {
 				postalcode	=> 'rc',
@@ -58,8 +69,8 @@ $GNURL = 'http://ws.geonames.org';
 				style		=> 'o'
 				},
 	find_nearby_postalcodes => {
-				lat			=> 'r',
-				lng			=> 'r',
+				lat		=> 'r',
+				lng		=> 'r',
 				radius		=> 'o',
 				maxRows		=> 'o',
 				style		=> 'o',
@@ -68,27 +79,28 @@ $GNURL = 'http://ws.geonames.org';
 	postalcode_country_info => {
 				},
 	find_nearby_placename => {
-				lat			=> 'r',
-				lng			=> 'r',
+				lat		=> 'r',
+				lng		=> 'r',
 				radius		=> 'o',
-				style		=> 'o'
+				style		=> 'o',
+				maxRows		=> 'o'
 				},
 	find_nearest_address => {
-				lat			=> 'r',
-				lng			=> 'r'
+				lat		=> 'r',
+				lng		=> 'r'
 				},
 	find_nearest_intersection => {
-				lat			=> 'r',
-				lng			=> 'r'
+				lat		=> 'r',
+				lng		=> 'r'
 				},
 	find_nearby_streets => {
-				lat			=> 'r',
-				lng			=> 'r'
+				lat		=> 'r',
+				lng		=> 'r'
 				},
 	find_nearby_wikipedia => {
 				lang		=> 'o',
-				lat			=> 'r',
-				lng			=> 'r',
+				lat		=> 'r',
+				lng		=> 'r',
 				radius		=> 'o',
 				maxRows		=> 'o',
 				country		=> 'o'
@@ -100,8 +112,9 @@ $GNURL = 'http://ws.geonames.org';
 				maxRows		=> 'o'
 				},
 	wikipedia_search => {
-				q			=> 'r',
+				q		=> 'r',
 				lang		=> 'o',
+				title		=> 'o',
 				maxRows		=> 'o'
 				},
 	wikipedia_bounding_box => {
@@ -115,7 +128,34 @@ $GNURL = 'http://ws.geonames.org';
 	country_info => {
 				country		=> 'o',
 				lang		=> 'o'
-				}			
+				},
+	country_code => {
+				lat		=> 'r',
+				lng		=> 'r',
+				lang		=> 'o',
+				radius		=> 'o'
+	},
+	find_nearby_weather => {
+				lat		=> 'r',
+				lng		=> 'r'
+	},
+	cities => {
+        			north           => 'r',
+            			south           => 'r',
+            			east            => 'r',
+           	 		west            => 'r',
+            			lang            => 'o',
+            			maxRows         => 'o'
+	},
+   	earthquakes => {
+            			north           => 'r',
+            			south           => 'r',
+            			east            => 'r',
+            			west            => 'r',
+            			date            => 'o',
+            			minMagnutide    => 'o',
+            			maxRows         => 'o'
+        }
 );
 
 sub new {
@@ -123,102 +163,161 @@ sub new {
     my $self = shift;
     my %hash = @_;
 
-	(exists($hash{url})) ? $self->{url} = $hash{url} : $self->{url} = $GNURL;
-	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
-	(exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
-	$self->{_functions} = \%searches;
+    (exists($hash{url})) ? $self->{url} = $hash{url} : $self->{url} = $GNURL;
+    (exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
+    (exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
+    $self->{_functions} = \%searches;
     bless $self, $class;
     return $self;
 }
 
 sub _build_request {
-	my $self = shift;
-	my $request = shift;
-	my $hash = {@_};
-	my $request_string = $GNURL . '/' . $searches{$request};
-	# check to see that mandatory arguments are present
-	my $conditional_mandatory_flag = 0;
-	my $conditional_mandatory_required = 0;
-	foreach my $arg (keys %{$valid_parameters{$request}}) {
-		if($valid_parameters{$request}->{$arg} eq 'r' && !exists($hash->{$arg})) {
-			carp("Mandatory argument $arg is missing!");
-		} 
-		if($valid_parameters{$request}->{$arg} eq 'rc') {
-			$conditional_mandatory_required = 1; 
-			if(exists($hash->{$arg})) {
-				$conditional_mandatory_flag++;
-			} 
-		}
+    my $self = shift;
+    my $request = shift;
+    my $hash = {@_};
+    my $request_string = $GNURL . '/' . $searches{$request};
+    # check to see that mandatory arguments are present
+    my $conditional_mandatory_flag = 0;
+    my $conditional_mandatory_required = 0;
+    foreach my $arg (keys %{$valid_parameters{$request}}) {
+	my $flags = $valid_parameters{$request}->{$arg};
+	if($flags =~ /d/ && exists($hash->{$arg})) {
+		carp("Argument $arg is depreciated.");
 	}
-	if($conditional_mandatory_required == 1 && $conditional_mandatory_flag != 1) {
-		carp("Invalid number of mandatory arguments (there can be only one)");
+	$flags =~ s/d//g;
+	if($flags eq 'r' && !exists($hash->{$arg})) {
+	    carp("Mandatory argument $arg is missing!");
 	}
-	
-	foreach my $key (keys(%$hash)) {
-		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
-		$request_string .= $key . '=' . $hash->{$key} . '&';
-	}	
-	chop($request_string); # loose the trailing &
-	return $request_string;
+	if($flags eq 'rc') {
+	    $conditional_mandatory_required = 1; 
+	    if(exists($hash->{$arg})) {
+		$conditional_mandatory_flag++;
+	    }
+	}
+    }
+    if($conditional_mandatory_required == 1 && $conditional_mandatory_flag != 1) {
+	carp("Invalid number of mandatory arguments (there can be only one)");
+    }
+
+    foreach my $key (keys(%$hash)) {
+	carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
+	$request_string .= $key . '=' . $hash->{$key} . '&';
+    }
+    chop($request_string); # loose the trailing &
+    return $request_string;
 }
 
-sub _parse_result {
-	my $self = shift;
-	my $geonamesresponse = shift;
-	my @result;
-	my $xmlsimple = XML::Simple->new();
-	my $xml = $xmlsimple->XMLin($geonamesresponse, KeyAttr=>[], ForceArray => 1);
+sub _parse_xml_result {
+    my $self = shift;
+    my $geonamesresponse = shift;
+    my @result;
+    my $xmlsimple = XML::Simple->new();
+    my $xml = $xmlsimple->XMLin($geonamesresponse, KeyAttr=>[], ForceArray => 1);
 
-	my $i = 0;
-	foreach my $element (keys %{$xml}) {
-		if ($element eq 'status') {
-			carp "ERROR: " . $xml->{$element}->[0]->{message};
-		}
-		next if (ref($xml->{$element}) ne "ARRAY");
-		foreach my $list (@{$xml->{$element}}) {
-			next if (ref($list) ne "HASH");
-			foreach my $attribute (%{$list}) {
-				next if !defined($list->{$attribute}->[0]);
-				$result[$i]->{$attribute} = $list->{$attribute}->[0];
-			}
-			$i++;
-		}
+    my $i = 0;
+    foreach my $element (keys %{$xml}) {
+	if ($element eq 'status') {
+	    carp "ERROR: " . $xml->{$element}->[0]->{message};
 	}
-	return \@result;
+	next if (ref($xml->{$element}) ne "ARRAY");
+	foreach my $list (@{$xml->{$element}}) {
+	    next if (ref($list) ne "HASH");
+	    foreach my $attribute (%{$list}) {
+		next if !defined($list->{$attribute}->[0]);
+		$result[$i]->{$attribute} = $list->{$attribute}->[0];
+	    }
+	    $i++;
+	}
+    }
+    return \@result;
+}
+
+sub _parse_json_result {
+    my $self = shift;
+    my $geonamesresponse = shift;
+    my @result;
+    my $json = new JSON;
+    my $data = $json->decode($geonamesresponse);
+
+    #print STDERR Data::Dumper->Dump([$data]);
+
+    my $i = 0;
+    foreach my $hash (keys %{$data}) {
+	if(ref($data->{$hash}) eq 'ARRAY') { # we have a list of objects
+	    foreach my $object (@{$data->{$hash}}) { # $object is a hash ref
+		next if(ref($object) ne 'HASH');
+		foreach my $attribute (keys %{$object}) {
+		    $result[$i]->{$attribute} = $object->{$attribute};
+		}
+		$i++;
+	    }
+	} else { #we have only one
+	    my $attributes = $data->{$hash};
+	    foreach my $attribute (keys %{$attributes}) {
+		$result[$i]->{$attribute} = $attributes->{$attribute};
+	    }
+	    $i++;
+	}
+    }
+    return \@result;
+}
+
+sub _parse_text_result {
+    my $self = shift;
+    my $geonamesresponse = shift;
+    my @result;
+    $result[0]->{Result} = $geonamesresponse;
+    return \@result;
 }
 
 sub _request {
-	my $self = shift;
-	my $request = shift;
-	my $browser = LWP::UserAgent->new;
-	my $response = $browser->get($request);
-	carp "Can't get $request -- ", $response->status_line unless $response->is_success;
-	return $response->content;
+    my $self = shift;
+    my $request = shift;
+    my $browser = LWP::UserAgent->new;
+    $browser->env_proxy();
+    my $response = $browser->get($request);
+    carp "Can't get $request -- ", $response->status_line unless $response->is_success;
+    return ($response->content, $response->header('Content-Type'));
 }
 
 sub _do_search {
-	my $self = shift;
-	my $searchtype = shift;
-	my $request = $self->_build_request($searchtype, @_);
-	my $result = $self->_request($request);
-	return($self->_parse_result($result));
+    my $self = shift;
+    my $searchtype = shift;
+    my $request = $self->_build_request($searchtype, @_);
+    my ($result, $mimetype) = $self->_request($request);
+    # check mime-type to determine which parse method to use.
+    # we accept text/xml, text/plain (how do see if it is JSON or not?)
+    if($mimetype =~ /^text\/xml;/) {
+	return($self->_parse_xml_result($result));
+    }
+    if($mimetype =~ /^application\/json;/) {
+	# a JSON object always start with a left-brace {
+	# according to http://json.org/	 
+	if($result =~ /^\{/) {
+	    return($self->_parse_json_result($result));
+	} else {
+	    return($self->_parse_text_result($result));
+	}
+    }
+    carp "Invalid mime type";
+    return undef;
 }
 
 sub geocode {
-	my $self = shift;
-	my $q = shift;
-	return($self->search(q=> $q));
+    my $self = shift;
+    my $q = shift;
+    return($self->search(q=> $q));
 }
 
 sub AUTOLOAD {
-	my $self = shift;
-	my $type = ref($self) || croak "$self is not an object";
-	my $name = our $AUTOLOAD;
-	$name =~ s/.*://;
-	unless (exists $self->{_functions}->{$name}) {
-		croak "No such method '$AUTOLOAD'";
-	}
-	return($self->_do_search($name, @_));
+    my $self = shift;
+    my $type = ref($self) || croak "$self is not an object";
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*://;
+    unless (exists $self->{_functions}->{$name}) {
+	croak "No such method '$AUTOLOAD'";
+    }
+    return($self->_do_search($name, @_));
 }
 
 sub DESTROY {
@@ -236,19 +335,19 @@ Geo::GeoNames - Perform geographical queries using GeoNames Web Services
   use Geo::GeoNames;
   use Data::Dumper;
   my $geo = new Geo::GeoNames();
-  
+
   # make a query based on placename
   my $result = $geo->search(q => 'Fredrikstad', maxRows => 2);
-  
+
   # print the first result
   print " Name: " . $result->[0]->{name};
   print " Longitude: " . $result->[0]->{lng};
   print " Lattitude: " . $result->[0]->{lat};
-  
+
   # Dump the data structure into readable form
   # This also will show the attributes to each found location
   Data::Dumper->Dump()
-  
+
   # Make a query based on postcode
   $result = $geo->postalcode_search(postalcode => "1630", maxRows => 3, style => "FULL"); 
 
@@ -291,16 +390,23 @@ Searches for information about a placename. Valid names for B<arg> are as follow
   maxRows => $maxrows
   startRow => $startrow
   country => $countrycode
+  continentCode => $continentcode
   adminCode1 => $admin1
   adminCode2 => $admin2
   adminCode3 => $admin3
   fclass => $fclass
+  featureClass => $fclass,
+  featureCode => $code
   lang => $lang
   type => $type
   style => $style
+  isNameRequired => $isnamerequired
+  tag => $tag
 
 One, and only one, of B<q>, B<name>, or B<name_equals> must be supplied to 
 this function.
+
+fclass is depreciated.
 
 For a thorough description of the arguments, see 
 http://www.geonames.org/export/geonames-search.html
@@ -314,6 +420,7 @@ B<arg> are as follows:
   lng => $lng
   radius => $radius
   style => $style
+  maxRows => $maxrows
 
 Both B<lat> and B<lng> must be supplied to 
 this function.
@@ -456,6 +563,7 @@ Searches for Wikipedia articles. Valid names for B<arg> are as follows:
   q => $placename
   maxRows => $maxrows
   lang => $lang
+  title => $title
 
 B<q> must be supplied to 
 this function.
@@ -475,6 +583,71 @@ Searches for Wikipedia articles. Valid names for B<arg> are as follows:
   maxRows => $maxrows
 
 B<south>, B<north>, B<east>, and B<west> and must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item cities(arg => $arg)
+
+Returns a list of cities and placenames within the bounding box. 
+Valid names for B<arg> are as follows:
+
+  south => $south
+  north => $north
+  east => $east
+  west => $west
+  lang => $lang
+  maxRows => $maxrows
+
+B<south>, B<north>, B<east>, and B<west> and must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item country_code(arg => $arg)
+
+Return the country code for a given point. Valid names for B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+  radius => $radius
+  lang => $lang
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item earthquakes(arg => $arg)
+
+Returns a list of cities and placenames within the bounding box. 
+Valid names for B<arg> are as follows:
+
+  south => $south
+  north => $north
+  east => $east
+  west => $west
+  date => $date
+  minMagnitude => $minmagnitude
+  maxRows => $maxrows
+
+B<south>, B<north>, B<east>, and B<west> and must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item find_nearby_weather(arg => $arg)
+
+Return the country code for a given point. Valid names for B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+
+Both B<lat> and B<lng> must be supplied to 
 this function.
 
 For a thorough description of the arguments, see 
@@ -530,12 +703,13 @@ UTF-8 encoded, and all data recieved from the webservices are
 also UTF-8 encoded. So make sure that strings are encoded/decoded
 based on the correct encoding.
 
-Please reports any bugs found or feature requests to
+Please report any bugs found or feature requests to
 http://code.google.com/p/geo-geonames/issues/list
 
 =head1 SEE ALSO
 
 http://www.geonames.org/export
+http://www.geonames.org/export/ws-overview.html
 
 =head1 SOURCE AVAILABILITY
 
@@ -548,7 +722,7 @@ Per Henrik Johansen, E<lt>per.henrik.johansen@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2007 by Per Henrik Johansen
+Copyright (C) 2007-2008 by Per Henrik Johansen
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,

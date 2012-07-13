@@ -1,6 +1,16 @@
-$Id: Changes 30 2007-07-03 18:54:57Z per.henrik.johansen $
+er $Id: Changes 42 2008-03-25 21:31:07Z per.henrik.johansen $
 
 Revision history for Perl extension Geo::GeoNames.
+
+0.06  2008-03-25
+	- Added JSON support
+	- Added function cities
+	- Added function country_info
+	- Added function earthquakes
+	- Added function find_nearby_weather
+	- Fixed arguments in functions search
+	- Fixed arguments to the functions country_code,
+	  find_nearby_placeName, wikipedia_search
 
 0.05  2007-07-05
 	- Added function find_nearby_wikipedia
