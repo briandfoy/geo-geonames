@@ -80,6 +80,7 @@ $GNURL = 'http://api.geonames.org';
 				username => 'r',
 				},
 	postalcode_country_info => {
+				username => 'r',
 				},
 	find_nearby_placename => {
 				lat		=> 'r',
