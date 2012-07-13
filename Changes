@@ -1,5 +1,9 @@
 er $Id: Changes 42 2008-03-25 21:31:07Z per.henrik.johansen $
 
+0.07 - Fri Jul 13 08:34:47 2012
+	* Update for change to api.geonames.org that requires
+	a user account
+
 Revision history for Perl extension Geo::GeoNames.
 
 0.06  2008-03-25
