@@ -1,7 +1,10 @@
+.releaserc
 Changes
+lib/Geo/GeoNames.pm
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
+META.yml			Module meta-data (added by MakeMaker)
 README
 t/Geo-GeoNames.t
-lib/Geo/GeoNames.pm
-META.yml                                 Module meta-data (added by MakeMaker)
+t/url.t
