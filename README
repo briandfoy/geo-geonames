@@ -1,0 +1,34 @@
+$Id: README 14 2006-11-30 12:01:14Z per.henrik.johansen $
+
+Geo-GeoNames version 0.01
+=========================
+
+This module provides an interface to the webservices found at
+http://ws.geonames.org. Currently it supports query by placename
+and postcode.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires the following modules:
+	Carp
+	XML::Simple
+	LWP
+	
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2006 by Per Henrik Johansen
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.8 or,
+at your option, any later version of Perl 5 you may have available.
+
+
