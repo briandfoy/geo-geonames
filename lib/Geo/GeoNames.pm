@@ -1,4 +1,4 @@
-# $Id$
+# $Id: GeoNames.pm 19 2006-11-30 23:32:57Z per.henrik.johansen $
 package Geo::GeoNames;
 
 use 5.008006;
@@ -8,14 +8,14 @@ use Carp;
 use XML::Simple;
 use LWP;
 
-use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters);
+use vars qw($VERSION $DEBUG $GNURL $CACHE %valid_parameters %searches);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $DEBUG = 0;
 $GNURL = 'http://ws.geonames.org';
 $CACHE = '';
 
-my %searches = (
+%searches = (
 	search => 'search?',
 	postalcode_search => 'postalCodeSearch?',
 	find_nearby_postalcodes => 'findNearbyPostalCodes?',
@@ -65,7 +65,7 @@ my %searches = (
 				lng			=> 'r',
 				radius		=> 'o',
 				style		=> 'o'
-				}										
+				}
 );
 
 sub new {
@@ -85,7 +85,7 @@ sub _build_request {
 	my $self = shift;
 	my $request = shift;
 	my $hash = {@_};
-	my $request_string = $GNURL . '/' . $request . '?';
+	my $request_string = $GNURL . '/' . $searches{$request};
 	# check to see that mandatory arguments are present
 	my $conditional_mandatory_flag = 0;
 	my $conditional_mandatory_required = 0;
@@ -118,27 +118,30 @@ sub _parse_result {
 	my @result;
 	my $xmlsimple = XML::Simple->new();
 	my $xml = $xmlsimple->XMLin($geonamesresponse, KeyAttr=>[], ForceArray => 1);
-	my($returned_items) = $xml->{totalResultsCount};
-	if(defined($returned_items) && $returned_items > 0) {
-		my $i = 0;
-		foreach my $geoname (@{$xml->{geoname}}) {
-			foreach my $attribute (%{$geoname}) {
-				next if !defined($geoname->{$attribute}->[0]);
-				$result[$i]->{$attribute} = $geoname->{$attribute}->[0];
-			}
-			$i++;
-		} 
-		foreach my $code (@{$xml->{code}}) {
-			foreach my $attribute (%{$code}) {
-				next if !defined($code->{$attribute}->[0]);
-				$result[$i]->{$attribute} = $code->{$attribute}->[0];
-			}
-			$i++;
-		} 
-		return \@result;
-	} else {
-		return undef;
+
+	my $i = 0;
+	foreach my $geoname (@{$xml->{geoname}}) {
+		foreach my $attribute (%{$geoname}) {
+			next if !defined($geoname->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $geoname->{$attribute}->[0];
+		}
+		$i++;
 	} 
+	foreach my $code (@{$xml->{code}}) {
+		foreach my $attribute (%{$code}) {
+			next if !defined($code->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $code->{$attribute}->[0];
+		}
+		$i++;
+	} 
+	foreach my $country (@{$xml->{country}}) {
+		foreach my $attribute (%{$country}) {
+			next if !defined($country->{$attribute}->[0]);
+			$result[$i]->{$attribute} = $country->{$attribute}->[0];
+		}
+		$i++;
+	} 
+	return \@result;
 }
 
 sub _request {
@@ -150,26 +153,45 @@ sub _request {
 	return $response->content;
 }
 
+sub _do_search {
+	my $self = shift;
+	my $searchtype = shift;
+	my $request = $self->_build_request($searchtype, @_);
+	my $result = $self->_request($request);
+	#croak $result;
+	return($self->_parse_result($result));
+}
+
 sub geocode {
 	my $self = shift;
 	my $q = shift;
-	return($self->search('search', q=> $q));
+	return($self->search(q=> $q));
 }
 
 sub search {
 	my $self = shift;
-	my $request = $self->_build_request('search', @_);
-	my $result = $self->_request($request);
-	return($self->_parse_result($result));
+	return($self->_do_search('search', @_));
 }
 
 sub postalcode_search {
 	my $self = shift;
-	my $request = $self->_build_request('postalCodeSearch', @_);
-	my $result = $self->_request($request);
-	return($self->_parse_result($result));
+	return($self->_do_search('postalcode_search', @_));
 }
 
+sub find_nearby_postalcodes{
+	my $self = shift;
+	return($self->_do_search('find_nearby_postalcodes', @_));
+}
+
+sub find_nearby_placename {
+	my $self = shift;
+	return($self->_do_search('find_nearby_placename', @_));
+}
+
+sub postalcode_country_info {
+	my $self = shift;
+	return($self->_do_search('postalcode_country_info', @_));
+}
 1;
 __END__
 
@@ -212,13 +234,19 @@ If more than one match is found, a list of locations will be returned.
 
 =item new 
 
-  $geo = Geo::GeoNames->new(url => $url)
+  $geo = Geo::GeoNames->new()
   $geo = Geo::GeoNames->new(url => $url)
 
 Constructor for Geo::GeoNames. It returns a reference to an Geo::GeoNames object.
 You may also pass the url of the webservices to use. The default value is
 http://ws.geonames.org and is the only url, to my knowledge, that provides
 the services needed by this module.
+
+=item geocode($placename)
+
+This function is just an easy access to search. It is the same as saying:
+
+  $geo->search(q => $placename);
 
 =item search(arg => $arg)
 
@@ -241,8 +269,24 @@ Searches for information about a placename. Valid names for B<arg> are as follow
 One, and only one, of B<q>, B<name>, or B<name_equals> must be supplied to 
 this function.
 
-For a thorough descriptions of the arguments, see 
+For a thorough description of the arguments, see 
 http://www.geonames.org/export/geonames-search.html
+
+=item find_nearby_placename(arg => $arg)
+
+Reverse lookup for closest placename to a given coordinate. Valid names for
+B<arg> are as follows:
+
+  lat => $lat
+  lng => $lng
+  radius => $radius
+  style => $style
+
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough descriptions of the arguments, see 
+http://www.geonames.org/export
 
 =item postalcode_search(arg => $arg)
 
@@ -257,14 +301,29 @@ Searches for information about a postalcode. Valid names for B<arg> are as follo
 One, and only one, of B<postalcode> or B<placename> must be supplied to 
 this function.
 
-For a thorough descriptions of the arguments, see 
+For a thorough description of the arguments, see 
 http://www.geonames.org/export
 
-=item geocode($placename)
+=item find_nearby_postalcodes(arg => $arg)
 
-This function is just an easy access to search. It is the same as saying:
+Reverse lookup for postalcodes. Valid names for B<arg> are as follows:
+  lat => $lat
+  lng => $lng
+  radius => $radius
+  maxRows => $maxrows
+  style => $style
+  country => $country
 
-  $geo->search(q => $placename);
+Both B<lat> and B<lng> must be supplied to 
+this function.
+
+For a thorough description of the arguments, see 
+http://www.geonames.org/export
+
+=item postalcode_country_info
+
+Returns a list of all postalcodes found on GeoNames. This function
+takes no arguments.
 
 =back
 
@@ -306,7 +365,7 @@ yields the result (after doing a Data::Dumper->Dump($result);):
          };
 
 The elements in the hashes depends on which B<style> is passed to the method, but
-will always contain B<name>, B<lng>, and B<lat>.
+will always contain B<name>, B<lng>, and B<lat> except for postalcode_country_info().
 
 =head1 BUGS
 
@@ -327,11 +386,6 @@ at http://code.google.com/p/geo-geonames
 =head1 AUTHOR
 
 Per Henrik Johansen, E<lt>perhenrik@cpan.orgE<gt>
-
-=head1 TODO
-
-The module only supports searches on placenames and postcodes.
-Others like reversed lookups will be added in the future. 
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,4 +1,14 @@
+$Id: Changes 18 2006-11-30 22:33:54Z per.henrik.johansen $
+
 Revision history for Perl extension Geo::GeoNames.
+
+0.02 $LastChangedDate: 2006-11-30 22:33:54Z $
+	- Added function find_nearby_postalcodes
+	- Added function find_nearby_placename
+	- Added function postalcode_country_info
+	- Refactored the code so it is easier to add new searches
+	- Fixed bug in geocode()
+	- edited perldoc
 
 0.01  Mon Nov 27 17:01:39 2006
 	- original version; created by h2xs 1.23 with options

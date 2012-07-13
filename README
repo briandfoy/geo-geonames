@@ -1,4 +1,12 @@
-$Id: README 14 2006-11-30 12:01:14Z per.henrik.johansen $
+$Id: README 19 2006-11-30 23:32:57Z per.henrik.johansen $
+
+Geo-GeoNames version 0.02
+=========================
+
+Added support for 3 more functions from the webservices:
+1. Find nearby postal codes / reverse geocoding
+2. Find nearby place name / reverse geocoding
+3. Postal code country info 
 
 Geo-GeoNames version 0.01
 =========================
