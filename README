@@ -1,63 +1,7 @@
-$Id: README 42 2008-03-25 21:31:07Z per.henrik.johansen $
-
-Geo-GeoNames version 0.06
-==========================
-
-Added JSON support so we can implement all of GeoNames methods 
-at some point.
-
-Added 4 new functions:
-1. cities
-2. country_code
-3. earthquakes
-4. find_nearby_weather
-
-Fixed some bugs.
-
-Fixed bug id 30438.
-
-Geo-GeoNames version 0.05
-=========================
-
-Added support for reverse geocoding of wikipedia 
-articles and lookup of country info.
-
-Thanks to Gordon Bower for making the initial request
-for these to be added.
-
-Geo-GeoNames version 0.04
-=========================
-
-Added support for 3 new reverse geocoding functions:
-1. find nearest address
-2. find nearest intersection
-3. find nearby streets
-
-These will only work for US coordinates.
-
-Thanks to Wes Gurney for pointing out that they were
-missing from the module.
-
-Geo-GeoNames version 0.03
-=========================
-
-Maintainance realease. Fixed Makefile.PL and now
-use AUTOLOADER in the module.
-
-Geo-GeoNames version 0.02
-=========================
-
-Added support for 3 more functions from the webservices:
-1. Find nearby postal codes / reverse geocoding
-2. Find nearby place name / reverse geocoding
-3. Postal code country info 
-
-Geo-GeoNames version 0.01
-=========================
+Geo::GeoNames
 
 This module provides an interface to the webservices found at
-http://ws.geonames.org. Currently it supports query by placename
-and postcode.
+http://api.geonames.org.
 
 INSTALLATION
 
@@ -71,12 +15,13 @@ To install this module type the following:
 DEPENDENCIES
 
 This module requires the following modules:
+
 	XML::Simple
 	LWP
 	
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2006 by Per Henrik Johansen
+Copyright (C) 2006-2008 by Per Henrik Johansen
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
