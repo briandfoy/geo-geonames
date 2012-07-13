@@ -209,7 +209,7 @@ sub username {
 sub _build_request {
     my $self = shift;
     my $request = shift;
-    my $hash = {@_};
+    my $hash = {@_, username => $self->username };
     my $request_string = $GNURL . '/' . $searches{$request};
     # check to see that mandatory arguments are present
     my $conditional_mandatory_flag = 0;
