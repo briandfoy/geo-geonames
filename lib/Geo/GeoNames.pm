@@ -188,6 +188,9 @@ sub _build_request {
 	if($flags eq 'r' && !exists($hash->{$arg})) {
 	    carp("Mandatory argument $arg is missing!");
 	}
+	if($flags !~ /m/ && exists($hash->{$arg}) && ref($hash->{$arg})) {
+		carp("Argument $arg cannot have multiple values.");
+	}
 	if($flags eq 'rc') {
 	    $conditional_mandatory_required = 1; 
 	    if(exists($hash->{$arg})) {
@@ -201,7 +204,8 @@ sub _build_request {
 
     foreach my $key (keys(%$hash)) {
 	carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
-	$request_string .= $key . '=' . $hash->{$key} . '&';
+	my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
+	$request_string .= join("", map {"$key=$_&"} @vals);
     }
     chop($request_string); # loose the trailing &
     return $request_string;
