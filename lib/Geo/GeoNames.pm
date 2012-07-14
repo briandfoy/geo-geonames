@@ -15,23 +15,23 @@ our $VERSION = '0.07';
 our $GNURL = 'http://api.geonames.org';
 
 our %searches = (
-	cities => 'cities?',
-	country_code => 'countrycode?type=xml&',
-	country_info => 'countryInfo?', 
-	earthquakes => 'earthquakesJSON?',
-	find_nearby_placename => 'findNearbyPlaceName?',
-	find_nearby_postalcodes => 'findNearbyPostalCodes?',
-	find_nearby_streets => 'findNearbyStreets?',
-	find_nearby_weather => 'findNearByWeatherXML?',
-	find_nearby_wikipedia => 'findNearbyWikipedia?',
+	cities                              => 'cities?',
+	country_code                        => 'countrycode?type=xml&',
+	country_info                        => 'countryInfo?', 
+	earthquakes                         => 'earthquakesJSON?',
+	find_nearby_placename               => 'findNearbyPlaceName?',
+	find_nearby_postalcodes             => 'findNearbyPostalCodes?',
+	find_nearby_streets                 => 'findNearbyStreets?',
+	find_nearby_weather                 => 'findNearByWeatherXML?',
+	find_nearby_wikipedia               => 'findNearbyWikipedia?',
 	find_nearby_wikipedia_by_postalcode => 'findNearbyWikipedia?',
-	find_nearest_address => 'findNearestAddress?',
-	find_nearest_intersection => 'findNearestIntersection?',
-	postalcode_country_info => 'postalCodeCountryInfo?',
-	postalcode_search => 'postalCodeSearch?',
-	search => 'search?',
-	wikipedia_bounding_box => 'wikipediaBoundingBox?',
-	wikipedia_search => 'wikipediaSearch?',
+	find_nearest_address                => 'findNearestAddress?',
+	find_nearest_intersection           => 'findNearestIntersection?',
+	postalcode_country_info             => 'postalCodeCountryInfo?',
+	postalcode_search                   => 'postalCodeSearch?',
+	search                              => 'search?',
+	wikipedia_bounding_box              => 'wikipediaBoundingBox?',
+	wikipedia_search                    => 'wikipediaSearch?',
 );
 
 #	r	= required
@@ -248,7 +248,9 @@ sub _build_request {
 	foreach my $key (keys(%$hash)) {
 	carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 	my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
-	$request_string .= join("", map {"$key=$_&"} @vals);
+	$request_string .= join("", 
+		map { "$key=$_&" } @vals
+		);
 	}
 	chop($request_string); # loose the trailing &
 	return $request_string;
@@ -451,14 +453,14 @@ username. With no arguments, return the username.
 With a single argument, set the GeoNames url and return that
 url. With no arguments, return the url.
 
-=item geocode($placename)
+=item geocode( $placename )
 
 This function is just an easy access to search. It is the same as
 saying:
 
-	$geo->search(q => $placename);
+	$geo->search( q => $placename );
 
-=item search(arg => $arg)
+=item search( arg => $arg )
 
 Searches for information about a placename. Valid names for B<arg> are
 as follows:
@@ -490,7 +492,7 @@ fclass is depreciated.
 For a thorough description of the arguments, see
 http://www.geonames.org/export/geonames-search.html
 
-=item find_nearby_placename(arg => $arg)
+=item find_nearby_placename( arg => $arg )
 
 Reverse lookup for closest placename to a given coordinate. Valid
 names for B<arg> are as follows:
@@ -785,7 +787,7 @@ find_nearest_intersection(), and find_nearby_streets().
 =head1 BUGS
 
 Not a bug, but the GeoNames services expects placenames to be UTF-8
-encoded, and all data recieved from the webservices are also UTF-8
+encoded, and all data received from the webservices are also UTF-8
 encoded. So make sure that strings are encoded/decoded based on the
 correct encoding.
 
