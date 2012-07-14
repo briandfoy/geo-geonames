@@ -1,5 +1,9 @@
 Revision history for Perl extension Geo::GeoNames.
 
+0.08 - Sat Jul 14 11:21:15 2012
+	* Make the live tests optional. You need to set GEONAMES_USER
+	to run the tests.
+
 0.07 - Fri Jul 13 08:34:47 2012 - brian d foy
 	* Update for change to api.geonames.org that requires
 	a user account
