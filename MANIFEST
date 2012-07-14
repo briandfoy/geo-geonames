@@ -1,4 +1,5 @@
 Changes
+examples/find_city.pl
 lib/Geo/GeoNames.pm
 Makefile.PL
 MANIFEST
