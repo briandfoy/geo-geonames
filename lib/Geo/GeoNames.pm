@@ -790,7 +790,7 @@ encoded. So make sure that strings are encoded/decoded based on the
 correct encoding.
 
 Please report any bugs found or feature requests to
-http://code.google.com/p/geo-geonames/issues/list
+https://rt.cpan.org//Dist/Display.html?Queue=geo-geonames
 
 =head1 SEE ALSO
 
