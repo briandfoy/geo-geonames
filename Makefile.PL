@@ -20,6 +20,7 @@ WriteMakefile(
 		build_requires => {
 			},
 		test_requires => {
+			Test::More => '0.94',
 			},
 		resources => {
 			repository => 'git@github.com:briandfoy/geo-geonames.git',
