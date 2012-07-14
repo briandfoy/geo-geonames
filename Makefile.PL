@@ -1,18 +1,29 @@
 use 5.008006;
 use ExtUtils::MakeMaker 6.48;
 
+unless( exists $ENV{GEONAMES_USER} ) {
+	print <<"HERE";
+To test Geo::GeoNames, you need a a GeoNames account enabled at least
+for free access. Start at http://www.geonames.org/login to create a
+new account.
+HERE
+	}
+
 WriteMakefile(
-	NAME           => 'Geo::GeoNames',
-	ABSTRACT_FROM  => 'lib/Geo/GeoNames.pm',
-	VERSION_FROM   => 'lib/Geo/GeoNames.pm',
-	AUTHOR         => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
+	NAME             => 'Geo::GeoNames',
+	ABSTRACT_FROM    => 'lib/Geo/GeoNames.pm',
+	VERSION_FROM     => 'lib/Geo/GeoNames.pm',
+	AUTHOR           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
+	LICENSE          => 'perl',
 	MIN_PERL_VERSION => 5.008006,
-	LICENSE => 'perl',
+
 	PREREQ_PM      => {
 		XML::Simple => '2.13',
 		LWP         => '5.805',
-		JSON        => '1.14'
+		JSON        => '1.14',
+		Test::More  => '0.94',
 		},
+
 	META_MERGE     => {
 		configure_requires => {
 			ExtUtils::MakeMaker => '6.48',
@@ -29,4 +40,4 @@ WriteMakefile(
 			},
 		keywords => [ qw() ],
 		},
-);
+	);
