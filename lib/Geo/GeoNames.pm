@@ -804,7 +804,9 @@ at http://code.google.com/p/geo-geonames
 
 =head1 AUTHOR
 
-Per Henrik Johansen, E<lt>per.henrik.johansen@gmail.comE<gt>
+Per Henrik Johansen, C<< <per.henrik.johansen@gmail.com> >>.
+
+Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >>.
 
 =head1 COPYRIGHT AND LICENSE
 
