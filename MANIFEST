@@ -5,8 +5,10 @@ Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.yml			Module meta-data (added by MakeMaker)
+MYMETA.json
+MYMETA.yml
 README
 t/Geo-GeoNames.t
-t/url.t
 t/pod.t
 t/pod_coverage.t
+t/url.t
