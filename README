@@ -12,16 +12,22 @@ To install this module type the following:
    make test
    make install
 
+To preform the live tests, set the GEONAMES_USER environment variable
+to your GeoNames account name.
+
 DEPENDENCIES
 
 This module requires the following modules:
 
 	XML::Simple
+	JSON
 	LWP
 	
 COPYRIGHT AND LICENCE
 
 Copyright (C) 2006-2008 by Per Henrik Johansen
+
+Currently maintainted by brian d foy, brian.d.foy@gmail.com
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
