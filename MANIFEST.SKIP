@@ -5,3 +5,6 @@ Makefile$
 \.bak$
 blib\b
 \.tar$
+Geo-.*\d
+\.old$
+\.releaserc
