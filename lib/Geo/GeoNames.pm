@@ -5,9 +5,7 @@ use 5.008006;
 use strict;
 use warnings;
 use Carp;
-use XML::Simple;
 use LWP;
-use JSON;
 
 use vars qw($DEBUG $CACHE);
 
@@ -257,8 +255,8 @@ sub _build_request {
 }
 
 sub _parse_xml_result {
-	my $self = shift;
-	my $geonamesresponse = shift;
+	require XML::Simple;
+	my( $self, $geonamesresponse ) = @_;
 	my @result;
 	my $xmlsimple = XML::Simple->new();
 	my $xml = $xmlsimple->XMLin($geonamesresponse, KeyAttr=>[], ForceArray => 1);
@@ -282,8 +280,8 @@ sub _parse_xml_result {
 }
 
 sub _parse_json_result {
-	my $self = shift;
-	my $geonamesresponse = shift;
+	require JSON;
+	my( $self, $geonamesresponse ) = @_;
 	my @result;
 	my $json = new JSON;
 	my $data = $json->decode($geonamesresponse);
