@@ -799,8 +799,8 @@ http://www.geonames.org/export/ws-overview.html
 
 =head1 SOURCE AVAILABILITY
 
-The source code for this module is available from SVN
-at http://code.google.com/p/geo-geonames
+The source code for this module is available from Github
+at https://github.com/briandfoy/geo-geonames
 
 =head1 AUTHOR
 
