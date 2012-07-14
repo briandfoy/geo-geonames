@@ -7,3 +7,5 @@ META.yml			Module meta-data (added by MakeMaker)
 README
 t/Geo-GeoNames.t
 t/url.t
+t/pod.t
+t/pod_coverage.t
