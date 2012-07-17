@@ -6,3 +6,4 @@ blib
 *.tar.gz
 *.tar
 Geo-*
+*.bak
