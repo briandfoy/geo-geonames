@@ -18,10 +18,11 @@ WriteMakefile(
 	MIN_PERL_VERSION => 5.008006,
 
 	PREREQ_PM      => {
-		XML::Simple => '2.13',
-		LWP         => '5.805',
-		JSON        => '1.14',
-		Test::More  => '0.94',
+		XML::Simple =    > '2.13',
+		LWP             => '5.805',
+		JSON            => '1.14',
+		Test::More      => '0.94',
+    Test::Exception => '0.31',
 		},
 
 	META_MERGE     => {
@@ -32,6 +33,7 @@ WriteMakefile(
 			},
 		test_requires => {
 			Test::More => '0.94',
+      Test::Exception => '0.31',
 			},
 		resources => {
 			repository => 'git@github.com:briandfoy/geo-geonames.git',

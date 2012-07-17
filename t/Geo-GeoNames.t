@@ -1,71 +1,85 @@
 use Test::More;
 use strict;
 use warnings;
+use LWP::UserAgent;
+use Test::Exception;
 
 my $class = 'Geo::GeoNames';
 use_ok( $class );
 
 unless( defined $ENV{GEONAMES_USER} ) {
-	warn "Define GEONAME_USER to test Geo::GeoNames\n";
+	warn "Define GEONAMES_USER to test Geo::GeoNames\n";
 	done_testing();
 	exit;
-	}
+}
 
 my $geo;
 subtest 'Make object' => sub {
 	can_ok( $class, 'new' );
 	$geo = Geo::GeoNames->new( username => $ENV{GEONAMES_USER} );
 	isa_ok( $geo, $class );
-	};
+  use Data::Dumper;
+	dies_ok( sub { my $bad_geo = Geo::GeoNames->new() }, 'no username passed' );
+};
+
+subtest 'valid_username' => sub {
+  my $browser = LWP::UserAgent->new;
+  $browser->env_proxy();
+  my $request = $geo->url . '/' . 'postalCodeCountryInfo?username=' . $geo->username;
+  my $response = $browser->get($request);
+  my $result = $geo->_parse_xml_result($response->content);
+  ok(! defined $result->[0]->{status}, 'valid_username');
+};
+  
 
 subtest 'search' => sub {
 	my $result = $geo->search( 'q' => "Oslo", maxRows => 3, style => "FULL" );
-	ok( defined $result              , 'q => Oslo' );
+	ok( defined $result              , 'q => Oslo' ) or diag($result);
 	ok( ref $result eq ref []        , 'result is array ref' );
 	ok( exists($result->[0]->{name}) , 'name exists in result' );
-	};
+};
 
 subtest 'postalcode_search' => sub {
 	my $result = $geo->postalcode_search( postalcode => "1630", style => "FULL", country => "NO" );
 	ok( defined $result              , 'postalcode 1630' );
 	ok( ref $result eq ref []        , 'result is array ref' );
 	ok( exists($result->[0]->{name}) , 'name exists in result' );
-	};
+};
 
 subtest 'find_nearby_postalcodes' => sub {
 	my $result = $geo->find_nearby_postalcodes( lng => "10", lat => "59" );
 	ok( defined $result              , 'nearby postalcode' );
 	ok( ref $result eq ref []        , 'result is array ref' );
 	ok( exists($result->[0]->{name}) , 'name exists in result' );
-	};
+};
 
 subtest 'find_nearby_placename' => sub {
 	my $result = $geo->find_nearby_placename( lng => "10", lat => "59" );
 	ok( defined $result              , 'nearby placename' );
 	ok( ref $result eq ref []        , 'result is array ref' );
 	ok( exists($result->[0]->{name}) , 'name exists in result' );
-	};
+};
 
 subtest 'postalcode_country_info' => sub {
 	my $result = $geo->postalcode_country_info();
 	ok( defined $result                     , 'postalcode_country_info' );
 	ok( ref $result eq ref []               , 'result is array ref' );
 	ok( exists($result->[0]->{countryCode}) , 'countryCode exists in result' );
-	};
+};
 
 subtest 'geocode' => sub {
 	my $result = $geo->geocode('Fredrikstad');
 	ok( defined $result                     , 'geocode Fredrikstad' );
 	ok( ref $result eq ref []               , 'result is array ref' );
 	ok( exists($result->[0]->{countryCode}) , 'countryCode exists in result' );
-	};
+};
 
 subtest 'find_nearest_address' => sub {
 	my $result = $geo->find_nearest_address( lng => "-122.1", lat => "37.4" );
 	ok( defined $result                , 'nearest address' );
 	ok( ref $result eq ref []          , 'result is array ref' );
 	ok( exists($result->[0]->{street}) , 'street exists in result' );
-	};
+};
 
 subtest 'find_nearest_intersection' => sub {
 	my $result = $geo->find_nearest_intersection( lng => "-122.1", lat => "37.4" );
@@ -73,7 +87,7 @@ subtest 'find_nearest_intersection' => sub {
 	ok( ref $result eq ref []           , 'result is array ref' );
 	ok( exists($result->[0]->{street1}) , 'street1 exists in result' );
 	ok( exists($result->[0]->{street2}) , 'street2 exists in result' );
-	};
+};
 
 subtest 'find_nearby_streets' => sub {
 	my $result = $geo->find_nearby_streets( lng => "-122.1", lat => "37.4" );
@@ -81,7 +95,7 @@ subtest 'find_nearby_streets' => sub {
 	ok( ref $result eq ref []        , 'result is array ref' );
 	ok( exists($result->[0]->{line}) , 'line exists in result' );
 	ok( exists($result->[0]->{name}) , 'name exists in result' );
-	};
+};
 
 subtest 'find_nearby_wikipedia' => sub {
 	my $result = $geo->find_nearby_wikipedia( lng => "9", lat => "47" );
@@ -90,7 +104,7 @@ subtest 'find_nearby_wikipedia' => sub {
 	ok( exists($result->[0]->{title})  , 'title exists in result' );
 	ok( exists($result->[0]->{lng})    , 'lng exists in result' );
 	ok( exists($result->[0]->{lat})    , 'lat exists in result' );
-	};
+};
 
 subtest 'find_nearby_wikipedia_by_postalcode' => sub {
 	my $result = $geo->find_nearby_wikipedia_by_postalcode( postalcode => "8775", country => "CH" );
@@ -99,7 +113,7 @@ subtest 'find_nearby_wikipedia_by_postalcode' => sub {
 	ok( exists($result->[0]->{title})  , 'title exists in result' );
 	ok( exists($result->[0]->{lng})    , 'lng exists in result' );
 	ok( exists($result->[0]->{lat})    , 'lat exists in result' );
-	};
+};
 
 subtest 'wikipedia_search' => sub {
 	my $result = $geo->wikipedia_search( 'q' => "london" );
@@ -108,7 +122,7 @@ subtest 'wikipedia_search' => sub {
 	ok( exists($result->[0]->{title})  , 'title exists in result' );
 	ok( exists($result->[0]->{lng})    , 'lng exists in result' );
 	ok( exists($result->[0]->{lat})    , 'lat exists in result' );
-	};
+};
 
 subtest 'wikipedia_bounding_box' => sub {
 	my $result = $geo->wikipedia_bounding_box( north => "44.1", south => "-9.9", east => "-22.4", west => "55.2" );
@@ -117,7 +131,7 @@ subtest 'wikipedia_bounding_box' => sub {
 	ok( exists($result->[0]->{title}) , 'title exists in result' );
 	ok( exists($result->[0]->{lng})   , 'lng exists in result' );
 	ok( exists($result->[0]->{lat})   , 'lat exists in result' );
-	};
+};
 
 subtest 'country_info' => sub {
 	TODO: {
@@ -130,7 +144,7 @@ subtest 'country_info' => sub {
 	ok( exists($result->[0]->{bBoxEast})  , 'bBoxEast exists in result' );
 	ok( exists($result->[0]->{bBoxSouth}) , 'bBoxSouth exists in result' );
 	}
-	};
+};
 
 subtest 'country_code' => sub {
 	my $result = $geo->country_code( lng => "10.2", lat => "47.03" );
@@ -138,7 +152,7 @@ subtest 'country_code' => sub {
 	ok( ref $result eq ref []               , 'result is array ref' );
 	ok( exists($result->[0]->{countryCode}) , 'countryCode exists in result' );
 	ok( exists($result->[0]->{countryName}) , 'countryName exists in result' );
-	};
+};
 
 subtest 'find_nearby_weather' => sub {
 	my $result = $geo->find_nearby_weather( lng => "10.2", lat => "47.03" );
@@ -146,7 +160,7 @@ subtest 'find_nearby_weather' => sub {
 	ok( ref $result eq ref []               , 'result is array ref' );
 	ok( exists($result->[0]->{observation}) , 'observation exists in result' );
 	ok( exists($result->[0]->{stationName}) , 'stationName exists in result' );
-	};
+};
 
 subtest 'cities' => sub {
 	my $result = $geo->cities( north => "44.1", south => "-9.9", east => "-22.4", west => "55.2" );
@@ -155,7 +169,7 @@ subtest 'cities' => sub {
 	ok( exists($result->[0]->{name})  , 'name exists in result' );
 	ok( exists($result->[0]->{lat})   , 'lat exists in result' );
 	ok( exists($result->[0]->{lng})   , 'lng exists in result' );
-	};
+};
 
 subtest 'earthquakes' => sub {
 	my $result = $geo->earthquakes( north => "44.1", south => "-9.9", east => "-22.4", west => "55.2" );
@@ -164,7 +178,7 @@ subtest 'earthquakes' => sub {
 	ok( exists($result->[0]->{magnitude}) , 'magnitude exists in result' );
 	ok( exists($result->[0]->{lat})       , 'lat exists in result' );
 	ok( exists($result->[0]->{lng})       , 'lng exists in result' );
-	};
+};
 
 {
 package Geo::GeoNames::Test;
@@ -177,6 +191,6 @@ subtest 'Geo::GeoNames::Test' => sub {
 	ok( defined $result                     , 'geocode Fredrikstad');
 	ok( ref $result eq ref []               , 'result is array ref');
 	ok( exists($result->[0]->{countryCode}) , 'countryCode exists in result');
-	};
+};
 
 done_testing();
