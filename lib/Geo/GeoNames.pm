@@ -261,19 +261,23 @@ sub _parse_xml_result {
 	foreach my $element (keys %{$xml}) {
 		if ($element eq 'status') {
 			carp "ERROR: " . $xml->{$element}->[0]->{message};
-			}
-		next if (ref($xml->{$element}) ne "ARRAY");
-		foreach my $list (@{$xml->{$element}}) {
-			next if (ref($list) ne "HASH");
-			foreach my $attribute (%{$list}) {
-				next if !defined($list->{$attribute}->[0]);
-				$result[$i]->{$attribute} = $list->{$attribute}->[0];
-				}
-			$i++;
-			}
-		}
+      $result[$i]->{$element} = $xml->{$element}->[0];
+    }
+    else {
+      next if (ref($xml->{$element}) ne "ARRAY");
+      foreach my $list (@{$xml->{$element}}) {
+        next if (ref($list) ne "HASH");
+        foreach my $attribute (keys %{$list}) {
+          next unless ref($list->{$attribute}) eq 'ARRAY';
+          next if !defined($list->{$attribute}->[0]);
+          $result[$i]->{$attribute} = $list->{$attribute}->[0];
+        }
+        $i++;
+      }
+    }
+  }
 	return \@result;
-	}
+}
 
 sub _parse_json_result {
 	require JSON;
