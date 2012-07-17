@@ -10,7 +10,6 @@ use LWP;
 use vars qw($DEBUG $CACHE);
 
 our $VERSION = '0.08';
-our $GNURL = 'http://api.geonames.org';
 
 our %searches = (
 	cities                              => 'cities?',
@@ -183,12 +182,12 @@ See http://www.geonames.org/export/web-services.html
 HERE
 
 	$self->username( $hash{username} );
+	$self->url( $hash{url} // $self->default_url );
 
-	(exists($hash{url})) ? $self->{url} = $hash{url} : $self->{url} = $GNURL;
 	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
 	(exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
 	$self->{_functions} = \%searches;
-	bless $self, $class;
+
 	return $self;
 	}
 
@@ -199,6 +198,8 @@ sub username {
 
 	$self->{username};
 	}
+
+sub default_url { 'http://api.geonames.org' }
 
 sub url {
 	my( $self, $url ) = @_;
@@ -211,7 +212,7 @@ sub url {
 sub _build_request {
 	my( $self, $request, @args ) = @_;
 	my $hash = { @args, username => $self->username };
-	my $request_string = $GNURL . '/' . $searches{$request};
+	my $request_string = $self->url . '/' . $searches{$request};
 
 	# check to see that mandatory arguments are present
 	my $conditional_mandatory_flag = 0;
@@ -441,6 +442,10 @@ username parameter is required.
 
 With a single argument, set the GeoNames username and return that
 username. With no arguments, return the username.
+
+=item default_url
+
+Returns C<http://api.geonames.org>.
 
 =item url( $url )
 
