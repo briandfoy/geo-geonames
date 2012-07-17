@@ -12,3 +12,4 @@ t/Geo-GeoNames.t
 t/pod.t
 t/pod_coverage.t
 t/url.t
+t/username.t
