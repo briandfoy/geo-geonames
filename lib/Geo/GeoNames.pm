@@ -5,7 +5,7 @@ use warnings;
 use utf8;
 
 use Carp;
-use LWP;
+use Mojo::UserAgent;
 
 use vars qw($DEBUG $CACHE);
 
@@ -316,13 +316,14 @@ sub _parse_text_result {
 	}
 
 sub _request {
-	my( $self, $request ) = @_;
-	my $browser = LWP::UserAgent->new;
-	$browser->env_proxy();
-	my $response = $browser->get($request);
-	carp "Can't get $request -- ", $response->status_line
-		unless $response->is_success;
-	return $response;
+	my( $self, $request_url ) = @_;
+	state $ua = do {
+		my $ua = Mojo::UserAgent->new;
+		$ua->on( error => sub { carp "Can't get $request -- " } );	
+		$ua;
+		};
+
+	$ua->get( $request_url )->res;
 	}
 
 sub _do_search {
@@ -333,18 +334,18 @@ sub _do_search {
 
 	# check mime-type to determine which parse method to use.
 	# we accept text/xml, text/plain (how do see if it is JSON or not?)
-	my $mime_type = $response->header( 'Content-type' );
+	my $mime_type = $response->headers->header( 'Content-type' );
 	if($mime_type =~ m(\Atext/xml;) ) {
-		return $self->_parse_xml_result( $response->content );
+		return $self->_parse_xml_result( $response->body );
 		}
 	if($mime_type =~ m(\Aapplication/json;) ) {
 		# a JSON object always start with a left-brace {
 		# according to http://json.org/
 		if( $response->content =~ m/\A\{/ ) {
-			return $self->_parse_json_result( $response->content );
+			return $response->json );
 			}
 		else {
-			return $self->_parse_text_result( $response->content );
+			return $self->_parse_text_result( $response->body );
 			}
 		}
 
