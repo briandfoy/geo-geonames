@@ -261,7 +261,8 @@ sub _parse_xml_result {
 	my $i = 0;
 	foreach my $element (keys %{$xml}) {
 		if ($element eq 'status') {
-			carp "ERROR: " . $xml->{$element}->[0]->{message};
+			carp "GeoNames error: " . $xml->{$element}->[0]->{message};
+			return [];
 			}
 		next if (ref($xml->{$element}) ne "ARRAY");
 		foreach my $list (@{$xml->{$element}}) {
