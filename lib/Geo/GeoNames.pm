@@ -244,6 +244,7 @@ sub _build_request {
 	foreach my $key (keys(%$hash)) {
 		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 		my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
+		no warnings 'uninitialized';
 		$request_string .= join("", map { "$key=$_&" } @vals );
 		}
 
