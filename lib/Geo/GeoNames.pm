@@ -9,7 +9,7 @@ use LWP;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 our %searches = (
 	cities                              => 'cities?',
