@@ -18,7 +18,6 @@ subtest 'Make object' => sub {
 	can_ok( $class, 'new' );
 	$geo = Geo::GeoNames->new( username => $ENV{GEONAMES_USER} );
 	isa_ok( $geo, $class );
-  use Data::Dumper;
 	dies_ok( sub { my $bad_geo = Geo::GeoNames->new() }, 'no username passed' );
 };
 
