@@ -1,15 +1,15 @@
 package Geo::GeoNames;
-use 5.008006;
+use utf8;
+use v5.10;
 use strict;
 use warnings;
-use utf8;
 
 use Carp;
 use LWP;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 our %searches = (
 	cities                              => 'cities?',
