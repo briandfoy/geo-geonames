@@ -35,7 +35,7 @@ our %searches = (
 #	o	= optional
 #	rc	= required - only one of the fields marked with rc is allowed. At least one must be present
 #	om	= optional, multiple entries allowed
-#	d	= depreciated - will be removed in later versions
+#	d	= deprecated - will be removed in later versions
 our %valid_parameters = (
 	search => {
 		'q'    => 'rc',
@@ -220,7 +220,7 @@ sub _build_request {
 	foreach my $arg (keys %{$valid_parameters{$request}}) {
 		my $flags = $valid_parameters{$request}->{$arg};
 		if($flags =~ /d/ && exists($hash->{$arg})) {
-			carp("Argument $arg is depreciated.");
+			carp("Argument $arg is deprecated.");
 			}
 		$flags =~ s/d//g;
 		if($flags eq 'r' && !exists($hash->{$arg})) {
@@ -488,7 +488,7 @@ as follows:
 One, and only one, of B<q>, B<name>, or B<name_equals> must be
 supplied to this function.
 
-fclass is depreciated.
+fclass is deprecated.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export/geonames-search.html
