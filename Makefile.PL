@@ -34,7 +34,7 @@ WriteMakefile(
 			Test::More => '0.94',
 			},
 		resources => {
-			repository => 'git@github.com:briandfoy/geo-geonames.git',
+			repository => 'git://github.com/briandfoy/geo-geonames.git',
 			license    => 'http://dev.perl.org/licenses/',
 			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Geo-GeoNames'
 			},
