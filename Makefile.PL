@@ -34,7 +34,12 @@ WriteMakefile(
 			Test::More => '0.94',
 			},
 		resources => {
-			repository => 'git://github.com/briandfoy/geo-geonames.git',
+			'meta-spec' => { version => '2' },
+			repository => {
+				type => 'git',
+				url  => 'git://github.com/briandfoy/geo-geonames.git',
+				web  => 'https://github.com/briandfoy/geo-geonames',
+				},
 			license    => 'http://dev.perl.org/licenses/',
 			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Geo-GeoNames'
 			},
