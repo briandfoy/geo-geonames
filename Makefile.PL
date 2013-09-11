@@ -1,4 +1,4 @@
-use 5.008006;
+use 5.010;
 use ExtUtils::MakeMaker 6.48;
 
 unless( exists $ENV{GEONAMES_USER} ) {
@@ -15,7 +15,7 @@ WriteMakefile(
 	VERSION_FROM     => 'lib/Geo/GeoNames.pm',
 	AUTHOR           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
 	LICENSE          => 'perl',
-	MIN_PERL_VERSION => 5.008006,
+	MIN_PERL_VERSION => 5.010,
 
 	PREREQ_PM      => {
 		XML::Simple => '2.13',
@@ -34,7 +34,7 @@ WriteMakefile(
 			Test::More => '0.94',
 			},
 		resources => {
-			repository => 'git@github.com:briandfoy/geo-geonames.git',
+			repository => 'git://github.com/briandfoy/geo-geonames.git',
 			license    => 'http://dev.perl.org/licenses/',
 			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Geo-GeoNames'
 			},
