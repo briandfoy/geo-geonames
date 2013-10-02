@@ -1,5 +1,10 @@
 Revision history for Perl extension Geo::GeoNames.
 
+1.01 - Wed Oct  2 18:25:19 2013
+	* Fix MYMETA problem (RT #89157)
+	* Patch for multi-value params (RT #48712)
+	* Patch for new API address (RT #62358)
+
 0.09 - Tue Jul 17 16:36:57 2012 - brian d foy
 	* Handle bad username cases. Require something that's not
 	empty and catch errors from the server when the username
