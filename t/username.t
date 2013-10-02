@@ -7,13 +7,19 @@ use_ok( $class );
 can_ok( $class, $method );
 
 subtest bad_name => sub {
+	my $string;
+	no warnings 'redefine';
+	local *Geo::GeoNames::carp = sub { $string = join '', @_ };
+
 	my $geo = eval { $class->$method(
 		username => 'fakename',
 		) };
-	
+
+
 	my $result = $geo->search( 'q' => 'Dijon' );
 	isa_ok( $result, ref [] );
 	is( scalar @$result, 0, 'There are no elements when the username is bad' );
+	like( $string, qr/does not exist/, 'Fake username gives warning' );
 	};
 	
 subtest empty_name => sub {
