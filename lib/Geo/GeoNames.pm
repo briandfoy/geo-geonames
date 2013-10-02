@@ -319,7 +319,7 @@ sub _request {
 	my( $self, $request_url ) = @_;
 	state $ua = do {
 		my $ua = Mojo::UserAgent->new;
-		$ua->on( error => sub { carp "Can't get $request -- " } );	
+		$ua->on( error => sub { carp "Can't get request" } );
 		$ua;
 		};
 
@@ -335,17 +335,19 @@ sub _do_search {
 	# check mime-type to determine which parse method to use.
 	# we accept text/xml, text/plain (how do see if it is JSON or not?)
 	my $mime_type = $response->headers->header( 'Content-type' );
+
 	if($mime_type =~ m(\Atext/xml;) ) {
 		return $self->_parse_xml_result( $response->body );
 		}
 	if($mime_type =~ m(\Aapplication/json;) ) {
 		# a JSON object always start with a left-brace {
 		# according to http://json.org/
-		if( $response->content =~ m/\A\{/ ) {
-			return $response->json );
+		my $body = $response->body;
+		if( $body =~ m/\A\{/ ) {
+			return $response->json
 			}
 		else {
-			return $self->_parse_text_result( $response->body );
+			return $self->_parse_text_result( $body );
 			}
 		}
 

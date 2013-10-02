@@ -160,10 +160,11 @@ subtest 'cities' => sub {
 subtest 'earthquakes' => sub {
 	my $result = $geo->earthquakes( north => "44.1", south => "-9.9", east => "-22.4", west => "55.2" );
 	ok( defined $result                   , 'earthquakes' );
-	ok( ref $result eq ref []             , 'result is array ref' );
-	ok( exists($result->[0]->{magnitude}) , 'magnitude exists in result' );
-	ok( exists($result->[0]->{lat})       , 'lat exists in result' );
-	ok( exists($result->[0]->{lng})       , 'lng exists in result' );
+	my $earthquakes = $result->[0]{Result}{earthquakes};
+	ok( ref $earthquakes eq ref []             , 'result is array ref' );
+	ok( exists($earthquakes->[0]->{magnitude}) , 'magnitude exists in result' );
+	ok( exists($earthquakes->[0]->{lat})       , 'lat exists in result' );
+	ok( exists($earthquakes->[0]->{lng})       , 'lng exists in result' );
 	};
 
 {
