@@ -19,7 +19,7 @@ WriteMakefile(
 
 	PREREQ_PM      => {
 		XML::Simple => '2.13',
-		LWP         => '5.805',
+		Mojo::UserAgent => '0',
 		JSON        => '1.14',
 		Test::More  => '0.94',
 		},
