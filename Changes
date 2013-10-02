@@ -1,12 +1,12 @@
 Revision history for Perl extension Geo::GeoNames.
 
-0.09 - Tue Jul 17 16:36:57 2012
+0.09 - Tue Jul 17 16:36:57 2012 - brian d foy
 	* Handle bad username cases. Require something that's not
 	empty and catch errors from the server when the username
 	is unknown.
 	* Make the API address overrideable through default_url()
 
-0.08 - Sat Jul 14 11:21:15 2012
+0.08 - Sat Jul 14 11:21:15 2012 - brian d foy
 	* Make the live tests optional. You need to set GEONAMES_USER
 	to run the tests.
 
