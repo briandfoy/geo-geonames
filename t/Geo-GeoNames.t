@@ -4,6 +4,7 @@ use warnings;
 
 unless( defined $ENV{GEONAMES_USER} and length $ENV{GEONAMES_USER} ) {
 	warn "Define GEONAME_USER to test Geo::GeoNames\n";
+	pass();
 	done_testing();
 	exit;
 	}
