@@ -8,3 +8,5 @@ blib\b
 Geo-.*\d
 \.old$
 \.releaserc
+MYMETA.*
+\.travis\.yml
