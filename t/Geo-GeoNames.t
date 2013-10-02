@@ -1,15 +1,15 @@
-use Test::More;
+use Test::More 0.94;
 use strict;
 use warnings;
-
-my $class = 'Geo::GeoNames';
-use_ok( $class );
 
 unless( defined $ENV{GEONAMES_USER} ) {
 	warn "Define GEONAME_USER to test Geo::GeoNames\n";
 	done_testing();
 	exit;
 	}
+
+my $class = 'Geo::GeoNames';
+use_ok( $class );
 
 my $geo;
 subtest 'Make object' => sub {
