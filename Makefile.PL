@@ -43,6 +43,6 @@ WriteMakefile(
 			license    => 'http://dev.perl.org/licenses/',
 			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Geo-GeoNames'
 			},
-		keywords => [ qw() ],
+		keywords => [ qw(geo geonames) ],
 		},
 	);
