@@ -8,7 +8,7 @@ can_ok( $class, $method );
 
 subtest bad_name => sub {
 	my $string;
-	no warnings 'redefine';
+	no warnings qw(redefine once);
 	local *Geo::GeoNames::carp = sub { $string = join '', @_ };
 
 	my $geo = eval { $class->$method(

@@ -2,7 +2,7 @@ use Test::More 0.94;
 use strict;
 use warnings;
 
-unless( defined $ENV{GEONAMES_USER} ) {
+unless( defined $ENV{GEONAMES_USER} and length $ENV{GEONAMES_USER} ) {
 	warn "Define GEONAME_USER to test Geo::GeoNames\n";
 	done_testing();
 	exit;
