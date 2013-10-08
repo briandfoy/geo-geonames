@@ -1,5 +1,9 @@
 Revision history for Perl extension Geo::GeoNames.
 
+1.01_01 - Tue Oct  8 09:51:31 2013
+	* Handle the test case where the tester is not connected 
+	to the internet.
+
 1.01 - Wed Oct  2 18:25:19 2013
 	* Fix MYMETA problem (RT #89157)
 	* Patch for multi-value params (RT #48712)
