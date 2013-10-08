@@ -209,10 +209,10 @@ sub url {
 	$self->{url};
 	}
 
-sub _build_request {
+sub _build_request_url {
 	my( $self, $request, @args ) = @_;
 	my $hash = { @args, username => $self->username };
-	my $request_string = $self->url . '/' . $searches{$request};
+	my $request_url = $self->url . '/' . $searches{$request};
 
 	# check to see that mandatory arguments are present
 	my $conditional_mandatory_flag = 0;
@@ -245,11 +245,11 @@ sub _build_request {
 		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 		my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
 		no warnings 'uninitialized';
-		$request_string .= join("", map { "$key=$_&" } @vals );
+		$request_url .= join("", map { "$key=$_&" } @vals );
 		}
 
-	chop($request_string); # loose the trailing &
-	return $request_string;
+	chop($request_url); # loose the trailing &
+	return $request_url;
 	}
 
 sub _parse_xml_result {
@@ -329,12 +329,12 @@ sub _request {
 sub _do_search {
 	my( $self, $searchtype, @args ) = @_;
 
-	my $request = $self->_build_request( $searchtype, @args );
-	my $response = $self->_request( $request );
+	my $request_url = $self->_build_request_url( $searchtype, @args );
+	my $response = $self->_request( $request_url );
 
 	# check mime-type to determine which parse method to use.
 	# we accept text/xml, text/plain (how do see if it is JSON or not?)
-	my $mime_type = $response->headers->header( 'Content-type' );
+	my $mime_type = $response->headers->content_type || '';
 
 	if($mime_type =~ m(\Atext/xml;) ) {
 		return $self->_parse_xml_result( $response->body );
@@ -351,9 +351,9 @@ sub _do_search {
 			}
 		}
 
-	carp "Invalid mime type [$mime_type]";
+	carp "Invalid mime type [$mime_type]. Maybe you aren't connected.";
 
-	return;
+	return [];
 	}
 
 sub geocode {
