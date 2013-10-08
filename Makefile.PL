@@ -21,7 +21,7 @@ WriteMakefile(
 		XML::Simple => '2.13',
 		Mojo::UserAgent => '0',
 		JSON        => '1.14',
-		Test::More  => '0.94',
+		Test::More  => '0.98',
 		},
 
 	META_MERGE     => {
