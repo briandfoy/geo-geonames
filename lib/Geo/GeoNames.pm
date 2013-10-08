@@ -9,7 +9,7 @@ use Mojo::UserAgent;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.01';
+our $VERSION = '1.01_01';
 
 our %searches = (
 	cities                              => 'cities?',
