@@ -1,7 +1,7 @@
 Revision history for Perl extension Geo::GeoNames.
 
 1.01_01 - Tue Oct  8 09:51:31 2013
-	* Handle the test case where the tester is not connected 
+	* Handle the test case where the tester is not connected
 	to the internet.
 
 1.01 - Wed Oct  2 18:25:19 2013
@@ -40,12 +40,12 @@ Revision history for Perl extension Geo::GeoNames.
 	* Added function wikipedia_bounding_box
 	* Added function country_info
 	* Some refactoring
-	
+
 0.04  2007-07-03 - Per Henrik Johansen
 	* Added function find_nearest_address
 	* Added function find_nearest_intersection
 	* Added function find_nearby_streets
-	
+
 0.03  2006-12-04 - Per Henrik Johansen
 	* Use AUTOLOADER to find method names (they all looked the same)
 	* Use PREREQ_PM in Makefile.PL. Added the versions on my system, since
