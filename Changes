@@ -60,6 +60,5 @@ Revision history for Perl module Geo::GeoNames
 	* edited perldoc
 
 0.01  Mon Nov 27 17:01:39 2006 - Per Henrik Johansen
-	* original version; created by h2xs 1.23 with options
-	-AXc -n Geo::GeoNames
+	* original version; created by h2xs 1.23 with options -AXc -n Geo::GeoNames
 
