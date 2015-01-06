@@ -1,25 +1,25 @@
 Revision history for Perl module Geo::GeoNames
 
-1.01_01 - Tue Oct  8 09:51:31 2013
+1.01_01 - 2013-10-08
 	* Handle the test case where the tester is not connected
 	to the internet.
 
-1.01 - Wed Oct  2 18:25:19 2013
+1.01 - 2013-10-02
 	* Fix MYMETA problem (RT #89157)
 	* Patch for multi-value params (RT #48712)
 	* Patch for new API address (RT #62358)
 
-0.09 - Tue Jul 17 16:36:57 2012
+0.09 - 2012-07-17
 	* Handle bad username cases. Require something that's not
 	empty and catch errors from the server when the username
 	is unknown.
 	* Make the API address overrideable through default_url()
 
-0.08 - Sat Jul 14 11:21:15 2012
+0.08 - 2012-07-14
 	* Make the live tests optional. You need to set GEONAMES_USER
 	to run the tests.
 
-0.07 - Fri Jul 13 08:34:47 2012
+0.07 - 2012-07-13
 	* brian d foy
 	* Update for change to api.geonames.org that requires
 	a user account
@@ -65,7 +65,7 @@ Revision history for Perl module Geo::GeoNames
 	* Fixed bug in geocode()
 	* edited perldoc
 
-0.01  Mon Nov 27 17:01:39 2006
+0.01 - 2006-11-27
 	* Per Henrik Johansen
 	* original version; created by h2xs 1.23 with options -AXc -n Geo::GeoNames
 
