@@ -1,5 +1,6 @@
 use 5.010;
-use ExtUtils::MakeMaker 6.48;
+use strict;
+use warnings;
 
 unless( exists $ENV{GEONAMES_USER} ) {
 	print <<"HERE";
@@ -9,7 +10,10 @@ new account. Set GEONAMES_USER to run the tests.
 HERE
 	}
 
-WriteMakefile(
+my $github    = 'https://github.com/briandfoy/';
+my $main_file = 'lib/';
+
+my %WriteMakefile = (
 	NAME             => 'Geo::GeoNames',
 	ABSTRACT_FROM    => 'lib/Geo/GeoNames.pm',
 	VERSION_FROM     => 'lib/Geo/GeoNames.pm',
@@ -46,3 +50,23 @@ WriteMakefile(
 		keywords => [ qw(geo geonames) ],
 		},
 	);
+
+sub arguments { \%WriteMakefile }
+
+do_it() unless caller;
+sub do_it {
+	require File::Spec;
+	my $MM ='ExtUtils::MakeMaker';
+	my $MM_version =
+		eval{ "$MM " . $WriteMakefile{'CONFIGURE_REQUIRES'}{'ExtUtils::MakeMaker'} }
+			//
+		"$MM 6.64";
+	eval "use $MM_version";
+	eval "use Test::Manifest 1.21" 
+		if -e File::Spec->catfile( qw(t test_manifest) );
+	WriteMakefile( %WriteMakefile );
+	}
+
+
+no warnings;
+__PACKAGE__;
