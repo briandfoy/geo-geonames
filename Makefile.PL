@@ -10,44 +10,48 @@ new account. Set GEONAMES_USER to run the tests.
 HERE
 	}
 
-my $github    = 'https://github.com/briandfoy/';
-my $main_file = 'lib/';
+my $github    = 'https://github.com/briandfoy/geo-geonames';
+my $main_file = 'lib/Geo/GeoNames.pm';
 
 my %WriteMakefile = (
+	MIN_PERL_VERSION => 5.010,
 	NAME             => 'Geo::GeoNames',
-	ABSTRACT_FROM    => 'lib/Geo/GeoNames.pm',
-	VERSION_FROM     => 'lib/Geo/GeoNames.pm',
+	ABSTRACT_FROM    => $main_file,
+	VERSION_FROM     => $main_file,
 	AUTHOR           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
 	LICENSE          => 'perl',
-	MIN_PERL_VERSION => 5.010,
 
-	PREREQ_PM      => {
-		XML::Simple => '2.13',
-		Mojo::UserAgent => '0',
-		JSON        => '1.14',
-		Test::More  => '0.98',
+	'CONFIGURE_REQUIRES' => {
+		'ExtUtils::MakeMaker' => '6.64',
 		},
 
-	META_MERGE     => {
-		configure_requires => {
-			ExtUtils::MakeMaker => '6.48',
-			},
-		build_requires => {
-			},
-		test_requires => {
-			Test::More => '0.94',
-			},
+	'BUILD_REQUIRES' => {
+		},
+
+	'TEST_REQUIRES' => {
+		'Test::More' => '0.98',
+		},
+
+	'PREREQ_PM'      => {
+		'XML::Simple'     => '2.13',
+		'Mojo::UserAgent' => '0',
+		'JSON'            => '1.14',
+		},
+
+	'META_MERGE' => {
+		'meta-spec' => { version => 2 },
+		keywords => [ qw(geo geonames) ],
 		resources => {
-			'meta-spec' => { version => '2' },
 			repository => {
 				type => 'git',
-				url  => 'git://github.com/briandfoy/geo-geonames.git',
-				web  => 'https://github.com/briandfoy/geo-geonames',
+				url  => "$github.git",
+				web  => $github,
 				},
-			license    => 'http://dev.perl.org/licenses/',
-			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Geo-GeoNames'
+			bugtraker => {
+				web    => "$github/issues",
+				},
+			homepage => $github,
 			},
-		keywords => [ qw(geo geonames) ],
 		},
 	);
 
