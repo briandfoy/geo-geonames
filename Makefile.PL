@@ -10,12 +10,13 @@ new account. Set GEONAMES_USER to run the tests.
 HERE
 	}
 
+my $module    = 'Geo::GeoNames';
 my $github    = 'https://github.com/briandfoy/geo-geonames';
-my $main_file = 'lib/Geo/GeoNames.pm';
+my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
 	MIN_PERL_VERSION => 5.010,
-	NAME             => 'Geo::GeoNames',
+	NAME             => $module,
 	ABSTRACT_FROM    => $main_file,
 	VERSION_FROM     => $main_file,
 	AUTHOR           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
