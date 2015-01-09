@@ -1,6 +1,4 @@
 use 5.010;
-
-package Geo::GeoNames;
 use strict;
 use warnings;
 
@@ -12,15 +10,12 @@ new account. Set GEONAMES_USER to run the tests.
 HERE
 	}
 
-use File::Spec::Functions qw(catfile);
-
-my $module    = __PACKAGE__;
+my $module    = 'Geo::GeoNames';
 my $github    = 'https://github.com/briandfoy/geo-geonames';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	MIN_PERL_VERSION => '5.010',
-
+	MIN_PERL_VERSION => 5.010,
 	NAME             => $module,
 	ABSTRACT_FROM    => $main_file,
 	VERSION_FROM     => $main_file,
@@ -72,7 +67,7 @@ sub do_it {
 		eval{ "$MM " . $WriteMakefile{'CONFIGURE_REQUIRES'}{'ExtUtils::MakeMaker'} }
 			//
 		"$MM 6.64";
-	eval "use $MM_version" || die "Could not load $MM_version: $@";
+	eval "use $MM_version; 1" or die "Could not load $MM_version: $@";
 	eval "use Test::Manifest 1.21" 
 		if -e File::Spec->catfile( qw(t test_manifest) );
 	WriteMakefile( %WriteMakefile );
