@@ -1,4 +1,6 @@
 use 5.010;
+
+package Geo::GeoNames;
 use strict;
 use warnings;
 
@@ -10,7 +12,8 @@ new account. Set GEONAMES_USER to run the tests.
 HERE
 	}
 
-my $module    = 'Geo::GeoNames';
+
+my $module    = __PACKAGE__;
 ( my $dist = $module ) =~ s/::/-/g;
 
 my $github    = 'https://github.com/briandfoy/geo-geonames';
