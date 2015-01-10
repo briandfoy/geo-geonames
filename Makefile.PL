@@ -11,6 +11,8 @@ HERE
 	}
 
 my $module    = 'Geo::GeoNames';
+( my $dist = $module ) =~ s/::/-/g;
+
 my $github    = 'https://github.com/briandfoy/geo-geonames';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
