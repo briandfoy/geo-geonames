@@ -4,14 +4,7 @@ package Geo::GeoNames;
 use strict;
 use warnings;
 
-unless( exists $ENV{GEONAMES_USER} ) {
-	print <<"HERE";
-To test Geo::GeoNames, you need a a GeoNames account enabled at least
-for free access. Start at http://www.geonames.org/login to create a
-new account. Set GEONAMES_USER to run the tests.
-HERE
-	}
-
+use File::Spec::Functions qw(catfile);
 
 my $module    = __PACKAGE__;
 ( my $dist = $module ) =~ s/::/-/g;
@@ -68,6 +61,15 @@ sub arguments { \%WriteMakefile }
 
 do_it() unless caller;
 sub do_it {
+
+	unless( exists $ENV{GEONAMES_USER} ) {
+		print <<"HERE";
+	To test Geo::GeoNames, you need a a GeoNames account enabled at least
+	for free access. Start at http://www.geonames.org/login to create a
+	new account. Set GEONAMES_USER to run the tests.
+	HERE
+		}
+
 	require File::Spec;
 	my $MM ='ExtUtils::MakeMaker';
 	my $MM_version =
