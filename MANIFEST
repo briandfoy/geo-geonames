@@ -1,0 +1,14 @@
+Changes
+examples/find_city.pl
+lib/Geo/GeoNames.pm
+LICENSE
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+README.pod
+t/Geo-GeoNames.t
+t/pod.t
+t/pod_coverage.t
+t/url.t
+t/username.t
+xt/changes.t
