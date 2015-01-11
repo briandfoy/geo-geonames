@@ -13,12 +13,13 @@ my $github    = 'https://github.com/briandfoy/geo-geonames';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	MIN_PERL_VERSION => 5.010,
-	NAME             => $module,
-	ABSTRACT_FROM    => $main_file,
-	VERSION_FROM     => $main_file,
-	AUTHOR           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
-	LICENSE          => 'perl',
+	'MIN_PERL_VERSION' => '5.010',
+
+	'NAME'             => $module,
+	'ABSTRACT_FROM'    => $main_file,
+	'VERSION_FROM'     => $main_file,
+	'AUTHOR'           => 'Per Henrik Johansen <per.henrik.johansen@gmail.com>',
+	'LICENSE'          => 'perl',
 
 	'CONFIGURE_REQUIRES' => {
 		'ExtUtils::MakeMaker'   => '6.64',
