@@ -1,12 +1,5 @@
-.DS_Store
-tar.gz$
-\.git
-Makefile$
-\.bak$
-blib\b
-\.tar$
-Geo-.*\d
-\.old$
+#!include_default
+
 \.releaserc
-MYMETA.*
+\.lwpcookies
 \.travis\.yml
