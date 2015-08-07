@@ -1,9 +1,5 @@
 Changes
 examples/find_city.pl
-Geo-GeoNames-1.01.tar
-Geo-GeoNames-1.01.tar.gz
-Geo-GeoNames-1.01_01.tar
-Geo-GeoNames-1.01_01.tar.gz
 INSTALL.SKIP
 lib/Geo/GeoNames.pm
 LICENSE
@@ -11,7 +7,6 @@ Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README.pod
-t/Geo-GeoNames.t
 t/pod.t
 t/pod_coverage.t
 t/url.t
