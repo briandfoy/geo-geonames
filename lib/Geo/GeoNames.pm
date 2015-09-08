@@ -380,6 +380,8 @@ sub DESTROY { 1 }
 
 __END__
 
+=encoding utf8
+
 =head1 NAME
 
 Geo::GeoNames - Perform geographical queries using GeoNames Web Services
