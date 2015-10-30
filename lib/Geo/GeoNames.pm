@@ -29,6 +29,7 @@ our %searches = (
 	search                              => 'search?',
 	wikipedia_bounding_box              => 'wikipediaBoundingBox?',
 	wikipedia_search                    => 'wikipediaSearch?',
+	get                                 =>  'get?',
 	);
 
 #	r	= required
@@ -272,10 +273,17 @@ sub _build_request_url {
 
 sub _parse_xml_result {
 	require XML::Simple;
-	my( $self, $geonamesresponse ) = @_;
+	my( $self, $geonamesresponse, $single_result ) = @_;
 	my @result;
 	my $xmlsimple = XML::Simple->new;
 	my $xml = $xmlsimple->XMLin( $geonamesresponse, KeyAttr => [], ForceArray => 1 );
+
+	if ($xml->{'status'}) {
+		carp "GeoNames error: " . $xml->{'status'}->[0]->{message};
+		return [];
+		}
+
+	$xml = { geoname => [ $xml ], totalResultsCount => '1' } if $single_result;
 
 	my $i = 0;
 	foreach my $element (keys %{$xml}) {
@@ -355,7 +363,7 @@ sub _do_search {
 	my $mime_type = $response->headers->content_type || '';
 
 	if($mime_type =~ m(\Atext/xml;) ) {
-		return $self->_parse_xml_result( $response->body );
+		return $self->_parse_xml_result( $response->body, $searchtype eq 'get' );
 		}
 	if($mime_type =~ m(\Aapplication/json;) ) {
 		# a JSON object always start with a left-brace {
