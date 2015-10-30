@@ -168,6 +168,18 @@ subtest 'earthquakes' => sub {
 	ok( exists($earthquakes->[0]->{lng})       , 'lng exists in result' );
 	};
 
+subtest 'earthquakes' => sub {
+	my $result = $geo->get( geonameId => 1 );
+	ok( defined $result                   , 'get' );
+	my $earthquakes = $result->[0]{Result}{geoname};
+	ok( ref $earthquakes eq ref []             , 'result is array ref' );
+	for my $field (qw/toponymName name lat lng geonameId countryCode fcl fcode fclName fcodeName population
+	               asciiName alternateNames elevation srtm3 continentCode adminCode1 adminName1
+	               adminCode2 adminName2 alternateName timezone bbox/) {
+	    ok( exists($earthquakes->[0]->{$field}) , "$field exists in result" );
+	}
+	};
+
 {
 package Geo::GeoNames::Test;
 use base qw(Geo::GeoNames);

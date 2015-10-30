@@ -57,18 +57,18 @@ our %valid_parameters = (
 		isNameRequired    => 'o',
 		tag    => 'o',
 		username => 'r',
-		name_startsWith => 'o';
-		countryBias => 'o';
-		cities => 'om';
-		operator => 'o';
-		searchlang => 'o';
-		charset => 'o';
-		fuzzy => 'o';
-		north => 'o';
-		west => 'o';
-		east => 'o';
-		south => 'o';
-		orderby => 'o';
+		name_startsWith => 'o',
+		countryBias => 'o',
+		cities => 'om',
+		operator => 'o',
+		searchlang => 'o',
+		charset => 'o',
+		fuzzy => 'o',
+		north => 'o',
+		west => 'o',
+		east => 'o',
+		south => 'o',
+		orderby => 'o',
 		},
 	postalcode_search => {
 		postalcode    => 'rc',
@@ -180,7 +180,13 @@ our %valid_parameters = (
 		minMagnutide    => 'o',
 		maxRows         => 'o',
 		username        => 'r',
-		}
+		},
+    get => {
+        geonameId => 'r',
+        lang      => 'o',
+        style     => 'o',
+        username  => 'r',
+        },
 	);
 
 sub new {
