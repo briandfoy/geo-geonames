@@ -260,11 +260,11 @@ sub _build_request_url {
 		carp("Invalid number of mandatory arguments (there can be only one)");
 		}
 
-	foreach my $key (keys(%$hash)) {
+	foreach my $key (sort keys(%$hash)) {
 		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 		my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
 		no warnings 'uninitialized';
-		$request_url .= join("", map { "$key=$_&" } @vals );
+		$request_url .= join("", map { "$key=$_&" } sort @vals );
 		}
 
 	chop($request_url); # loose the trailing &
