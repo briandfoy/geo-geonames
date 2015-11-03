@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 unless( defined $ENV{GEONAMES_USER} and length $ENV{GEONAMES_USER} ) {
-	warn "Define GEONAME_USER to test Geo::GeoNames\n";
+	warn "Define GEONAMES_USER to test Geo::GeoNames\n";
 	pass();
 	done_testing();
 	exit;
@@ -161,11 +161,23 @@ subtest 'cities' => sub {
 subtest 'earthquakes' => sub {
 	my $result = $geo->earthquakes( north => "44.1", south => "-9.9", east => "-22.4", west => "55.2" );
 	ok( defined $result                   , 'earthquakes' );
-	my $earthquakes = $result->[0]{Result}{earthquakes};
+	my $earthquakes = $result->{earthquakes};
 	ok( ref $earthquakes eq ref []             , 'result is array ref' );
 	ok( exists($earthquakes->[0]->{magnitude}) , 'magnitude exists in result' );
 	ok( exists($earthquakes->[0]->{lat})       , 'lat exists in result' );
 	ok( exists($earthquakes->[0]->{lng})       , 'lng exists in result' );
+	};
+
+subtest 'get' => sub {
+	my $result = $geo->get( geonameId => 1 );
+	ok( defined $result                   , 'get' );
+	my $get = $result;
+	ok( ref $get eq ref []             , 'result is array ref' );
+	for my $field (qw/toponymName name lat lng geonameId countryCode fcl fcode fclName fcodeName population
+	               asciiName alternateNames elevation srtm3 continentCode adminCode1 adminName1
+	               adminCode2 adminName2 alternateName timezone bbox/) {
+	    ok( exists($get->[0]->{$field}) , "$field exists in result" );
+	}
 	};
 
 {

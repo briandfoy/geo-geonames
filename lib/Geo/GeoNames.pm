@@ -29,6 +29,7 @@ our %searches = (
 	search                              => 'search?',
 	wikipedia_bounding_box              => 'wikipediaBoundingBox?',
 	wikipedia_search                    => 'wikipediaSearch?',
+	get                                 =>  'get?',
 	);
 
 #	r	= required
@@ -57,6 +58,18 @@ our %valid_parameters = (
 		isNameRequired    => 'o',
 		tag    => 'o',
 		username => 'r',
+		name_startsWith => 'o',
+		countryBias => 'o',
+		cities => 'om',
+		operator => 'o',
+		searchlang => 'o',
+		charset => 'o',
+		fuzzy => 'o',
+		north => 'o',
+		west => 'o',
+		east => 'o',
+		south => 'o',
+		orderby => 'o',
 		},
 	postalcode_search => {
 		postalcode    => 'rc',
@@ -168,7 +181,13 @@ our %valid_parameters = (
 		minMagnutide    => 'o',
 		maxRows         => 'o',
 		username        => 'r',
-		}
+		},
+    get => {
+        geonameId => 'r',
+        lang      => 'o',
+        style     => 'o',
+        username  => 'r',
+        },
 	);
 
 sub new {
@@ -241,11 +260,11 @@ sub _build_request_url {
 		carp("Invalid number of mandatory arguments (there can be only one)");
 		}
 
-	foreach my $key (keys(%$hash)) {
+	foreach my $key (sort keys(%$hash)) {
 		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 		my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
 		no warnings 'uninitialized';
-		$request_url .= join("", map { "$key=$_&" } @vals );
+		$request_url .= join("", map { "$key=$_&" } sort @vals );
 		}
 
 	chop($request_url); # loose the trailing &
@@ -254,17 +273,20 @@ sub _build_request_url {
 
 sub _parse_xml_result {
 	require XML::Simple;
-	my( $self, $geonamesresponse ) = @_;
+	my( $self, $geonamesresponse, $single_result ) = @_;
 	my @result;
 	my $xmlsimple = XML::Simple->new;
 	my $xml = $xmlsimple->XMLin( $geonamesresponse, KeyAttr => [], ForceArray => 1 );
 
+	if ($xml->{'status'}) {
+		carp "GeoNames error: " . $xml->{'status'}->[0]->{message};
+		return [];
+		}
+
+	$xml = { geoname => [ $xml ], totalResultsCount => '1' } if $single_result;
+
 	my $i = 0;
 	foreach my $element (keys %{$xml}) {
-		if ($element eq 'status') {
-			carp "GeoNames error: " . $xml->{$element}->[0]->{message};
-			return [];
-			}
 		next if (ref($xml->{$element}) ne "ARRAY");
 		foreach my $list (@{$xml->{$element}}) {
 			next if (ref($list) ne "HASH");
@@ -337,7 +359,7 @@ sub _do_search {
 	my $mime_type = $response->headers->content_type || '';
 
 	if($mime_type =~ m(\Atext/xml;) ) {
-		return $self->_parse_xml_result( $response->body );
+		return $self->_parse_xml_result( $response->body, $searchtype eq 'get' );
 		}
 	if($mime_type =~ m(\Aapplication/json;) ) {
 		# a JSON object always start with a left-brace {
