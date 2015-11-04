@@ -493,26 +493,38 @@ saying:
 Searches for information about a placename. Valid names for B<arg> are
 as follows:
 
-	q              => $placename
-	name           => $placename
-	name_equals    => $placename
-	maxRows        => $maxrows
-	startRow       => $startrow
-	country        => $countrycode
-	continentCode  => $continentcode
-	adminCode1     => $admin1
-	adminCode2     => $admin2
-	adminCode3     => $admin3
-	fclass         => $fclass
-	featureClass   => $fclass,
-	featureCode    => $code
-	lang           => $lang
-	type           => $type
-	style          => $style
-	isNameRequired => $isnamerequired
-	tag            => $tag
+	q               => $placename
+	name            => $placename
+	name_equals     => $placename
+	maxRows         => $maxrows
+	startRow        => $startrow
+	country         => $countrycode
+	continentCode   => $continentcode
+	adminCode1      => $admin1
+	adminCode2      => $admin2
+	adminCode3      => $admin3
+	fclass          => $fclass
+	featureClass    => $fclass,
+	featureCode     => $code
+	lang            => $lang
+	type            => $type
+	style           => $style
+	isNameRequired  => $isnamerequired
+	tag             => $tag
+    name_startsWith => $name_startsWith
+    countryBias     => $countryBias
+    cities          => $cities
+    operator        => $operator
+    searchlang      => $searchlang
+    charset         => $charset
+    fuzzy           => $fuzzy
+    north           => $north
+    west            => $west
+    east            => $east
+    south           => $south
+    orderby         => $orderby
 
-One, and only one, of B<q>, B<name>, or B<name_equals> must be
+One, and only one, of B<q>, B<name>, B<name_equals>, or B<name_startsWith> must be
 supplied to this function.
 
 fclass is deprecated.
@@ -764,6 +776,19 @@ as follows:
 
 Both B<lat> and B<lng> must be supplied to
 this function.
+
+For a thorough description of the arguments, see
+http://www.geonames.org/export
+
+=item get(arg => $arg)
+
+Returns information about a given place based on a geonameId.
+
+	geonamesId => $geonamesId
+	lang       => $lang
+	style      => $style (Seems to be ignored, although documented)
+
+B<geonamesId> must be supplied to this function. B<lang> and B<style> are optional.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
