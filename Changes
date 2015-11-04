@@ -1,14 +1,14 @@
 Revision history for Perl module Geo::GeoNames
 
 1.03 - 2015-11-04
-   * Nicolas Mendoza
-   * Added documentation for new parameters and get function
+	* Nicolas Mendoza
+	* Added documentation for new parameters and get function
 
 1.02 - 2015-11-03
-   * Nicolas Mendoza
-   * Added function get
-   * Sort parameters in URLs to end up with consistent URL (GH #8)
-   * Add missing allowed search parameters (GH #4)
+	* Nicolas Mendoza
+	* Added function get
+	* Sort parameters in URLs to end up with consistent URL (GH #8)
+	* Add missing allowed search parameters (GH #4)
 
 1.01_01 - 2013-10-08
 	* Handle the test case where the tester is not connected
