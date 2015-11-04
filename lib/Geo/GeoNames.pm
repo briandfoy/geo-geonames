@@ -9,7 +9,7 @@ use Mojo::UserAgent;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.01_01';
+our $VERSION = '1.02';
 
 our %searches = (
 	cities                              => 'cities?',
@@ -838,7 +838,8 @@ at https://github.com/briandfoy/geo-geonames
 
 Per Henrik Johansen, C<< <per.henrik.johansen@gmail.com> >>.
 
-Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >>.
+Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >> 
+and Nicolas Mendoza, C<< <mendoza@pvv.ntnu.no> >>
 
 =head1 COPYRIGHT AND LICENSE
 
