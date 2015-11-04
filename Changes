@@ -1,5 +1,9 @@
 Revision history for Perl module Geo::GeoNames
 
+1.03 - 2015-11-04
+   * Nicolas Mendoza
+   * Added documentation for new parameters and get function
+
 1.02 - 2015-11-03
    * Nicolas Mendoza
    * Added function get
