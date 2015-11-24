@@ -29,7 +29,7 @@ our %searches = (
 	search                              => 'search?',
 	wikipedia_bounding_box              => 'wikipediaBoundingBox?',
 	wikipedia_search                    => 'wikipediaSearch?',
-	get                                 =>  'get?',
+	get                                 => 'get?',
 	);
 
 #	r	= required
@@ -511,18 +511,18 @@ as follows:
 	style           => $style
 	isNameRequired  => $isnamerequired
 	tag             => $tag
-    name_startsWith => $name_startsWith
-    countryBias     => $countryBias
-    cities          => $cities
-    operator        => $operator
-    searchlang      => $searchlang
-    charset         => $charset
-    fuzzy           => $fuzzy
-    north           => $north
-    west            => $west
-    east            => $east
-    south           => $south
-    orderby         => $orderby
+	name_startsWith => $name_startsWith
+	countryBias     => $countryBias
+	cities          => $cities
+	operator        => $operator
+	searchlang      => $searchlang
+	charset         => $charset
+	fuzzy           => $fuzzy
+	north           => $north
+	west            => $west
+	east            => $east
+	south           => $south
+	orderby         => $orderby
 
 One, and only one, of B<q>, B<name>, B<name_equals>, or B<name_startsWith> must be
 supplied to this function.
