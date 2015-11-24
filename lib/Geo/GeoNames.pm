@@ -6,6 +6,7 @@ use warnings;
 
 use Carp;
 use Mojo::UserAgent;
+use Scalar::Util qw/blessed/;
 
 use vars qw($DEBUG $CACHE);
 
@@ -203,6 +204,10 @@ HERE
 	$self->username( $hash{username} );
 	$self->url( $hash{url} // $self->default_url );
 
+    croak 'Illegal ua object, needs either a Mojo::UserAgent or an LWP::UserAgent derived object'
+        if exists $hash{ua} && !(ref $hash{ua} && blessed($hash{ua}) && ( $hash{ua}->isa('Mojo::UserAgent') || $hash{ua}->isa('LWP::UserAgent') ) );
+	$self->ua($hash{ua} || $self->default_ua );
+
 	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
 	(exists($hash{cache})) ? $CACHE = $hash{cache} : 0;
 	$self->{_functions} = \%searches;
@@ -218,6 +223,19 @@ sub username {
 	$self->{username};
 	}
 
+sub ua {
+	my( $self, $ua ) = @_;
+
+	$self->{ua} = $ua if @_ == 2;
+
+	$self->{ua};
+	}
+
+sub default_ua {
+	my $ua = Mojo::UserAgent->new;
+	$ua->on( error => sub { carp "Can't get request" } );
+	$ua;
+}
 sub default_url { 'http://api.geonames.org' }
 
 sub url {
@@ -259,12 +277,11 @@ sub _build_request_url {
 	if($conditional_mandatory_required == 1 && $conditional_mandatory_flag != 1) {
 		carp("Invalid number of mandatory arguments (there can be only one)");
 		}
-
 	foreach my $key (sort keys(%$hash)) {
 		carp("Invalid argument $key") if(!defined($valid_parameters{$request}->{$key}));
 		my @vals = ref($hash->{$key}) ? @{$hash->{$key}} : $hash->{$key};
 		no warnings 'uninitialized';
-		$request_url .= join("", map { "$key=$_&" } sort @vals );
+		$request_url .= join('', map { "$key=$_&" } sort @vals );
 		}
 
 	chop($request_url); # loose the trailing &
@@ -339,13 +356,9 @@ sub _parse_text_result {
 
 sub _request {
 	my( $self, $request_url ) = @_;
-	state $ua = do {
-		my $ua = Mojo::UserAgent->new;
-		$ua->on( error => sub { carp "Can't get request" } );
-		$ua;
-		};
-
-	$ua->get( $request_url )->res;
+	
+	my $res = $self->{ua}->get( $request_url );
+	return $res->can('res') ? $res->res : $res;
 	}
 
 sub _do_search {
@@ -358,16 +371,28 @@ sub _do_search {
 	# we accept text/xml, text/plain (how do see if it is JSON or not?)
 	my $mime_type = $response->headers->content_type || '';
 
-	if($mime_type =~ m(\Atext/xml;) ) {
-		return $self->_parse_xml_result( $response->body, $searchtype eq 'get' );
+	my $body = '';
+	if ($response->can('body')) {
+		$body = $response->body;
 		}
-	if($mime_type =~ m(\Aapplication/json;) ) {
+	else {
+		$body = $response->decoded_content;
+	}
+
+	if($mime_type =~ m(\Atext/xml;?) ) {
+		return $self->_parse_xml_result( $body, $searchtype eq 'get' );
+		}
+	if($mime_type =~ m(\Aapplication/json;?) ) {
 		# a JSON object always start with a left-brace {
 		# according to http://json.org/
-		my $body = $response->body;
 		if( $body =~ m/\A\{/ ) {
-			return $response->json
+		    if ($response->can('json')) {
+				return $response->json;
+				}
+			else {
+				return $self->_parse_json_result( $body );
 			}
+		}
 		else {
 			return $self->_parse_text_result( $body );
 			}
@@ -467,10 +492,23 @@ use. The default value is http://api.geonames.org and is the only url,
 to my knowledge, that provides the services needed by this module. The
 username parameter is required.
 
+=item ua( $ua )
+
+With a single argument, set the UserAgent to be used by all API calls
+and return that UserAgent object. Supports L<Mojo::UserAgent> and
+ L<LWP::UserAgent> derivatives.
+
+With no arguments, return the current UserAgent used.
+
 =item username( $username )
 
 With a single argument, set the GeoNames username and return that
 username. With no arguments, return the username.
+
+=item default_ua
+
+Returns the default UserAgent used a Mojo::UserAgent object that
+carps on errors.
 
 =item default_url
 
