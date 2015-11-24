@@ -10,6 +10,7 @@ README.pod
 t/pod.t
 t/pod_coverage.t
 t/url.t
+t/useragent.t
 t/username.t
 t/xml.t
 xt/changes.t

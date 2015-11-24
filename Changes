@@ -1,5 +1,9 @@
 Revision history for Perl module Geo::GeoNames
 
+1.04 - 2015-11-24
+	* Nicolas Mendoza
+	* Added support for custom User-Agent (GH #10)
+
 1.03 - 2015-11-04
 	* Nicolas Mendoza
 	* Added documentation for new parameters and get function
