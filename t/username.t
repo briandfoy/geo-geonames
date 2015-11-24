@@ -13,7 +13,7 @@ subtest bad_name => sub {
 
 	my $geo = eval { $class->$method(
 		username => 'fakename',
-		) };
+		) } or fail($@);
 	my $result = $geo->search( 'q' => 'Dijon' );
 	isa_ok( $result, ref [] );
 	is( scalar @$result, 0, 'There are no elements when the username is bad' );
