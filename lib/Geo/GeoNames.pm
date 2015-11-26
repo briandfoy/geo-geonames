@@ -321,30 +321,7 @@ sub _parse_json_result {
 	require JSON;
 	my( $self, $geonamesresponse ) = @_;
 	my @result;
-	my $json = JSON->new;
-	my $data = $json->decode($geonamesresponse);
-
-	my $i = 0;
-	foreach my $hash (keys %{$data}) {
-		if(ref($data->{$hash}) eq 'ARRAY') { # we have a list of objects
-			foreach my $object (@{$data->{$hash}}) { # $object is a hash ref
-				next if(ref($object) ne 'HASH');
-				foreach my $attribute (keys %{$object}) {
-					$result[$i]->{$attribute} = $object->{$attribute};
-					}
-				$i++;
-				}
-			}
-		else { #we have only one
-			my $attributes = $data->{$hash};
-			foreach my $attribute (keys %{$attributes}) {
-				$result[$i]->{$attribute} = $attributes->{$attribute};
-				}
-			$i++;
-			}
-		}
-
-	return \@result;
+	return JSON->new->decode($geonamesresponse);
 	}
 
 sub _parse_text_result {
