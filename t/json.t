@@ -6,12 +6,17 @@ use warnings;
 use Test::More;
 use Geo::GeoNames;
 
+use utf8;
+
 my $g = Geo::GeoNames->new( username => 'fakeusername');
 
-my $data = do { local $/; <DATA> };
-ok eval { $g->_parse_json_result($data) }, 'Parsing JSON does not die';
+my $data = do { binmode DATA, 'utf8'; local $/; <DATA> };
+my $json;
+ok eval { $json = $g->_parse_json_result($data) }, 'Parsing JSON does not die';
 
-is @{ $g->_parse_json_result($data)->{geonames} }, 24, 'Correct amount of entries';
+is @{ $json->{geonames} }, 24, 'Correct amount of entries';
+
+is $json->{geonames}->[0]->{toponymName}, 'Tromsø', 'Correct encoding back';
 
 done_testing;
 

@@ -1,5 +1,9 @@
 Revision history for Perl module Geo::GeoNames
 
+1.05 - 2015-11-26
+	* Nicolas Mendoza
+	* Fix JSON parsing when using a custom non-Mojo::UserAgent-derived client
+
 1.04 - 2015-11-24
 	* Nicolas Mendoza
 	* Added support for custom User-Agent (GH #10)

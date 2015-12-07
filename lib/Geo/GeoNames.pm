@@ -10,7 +10,7 @@ use Scalar::Util qw/blessed/;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 our %searches = (
 	cities                              => 'cities?',
