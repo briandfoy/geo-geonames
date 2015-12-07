@@ -32,7 +32,6 @@ my $get_xml =<< 'XML'
 <adminCode2/>
 <adminName2/>
 <alternateName lang="fa">Kūh-e Zardar</alternateName>
-<alternateName lang="fa">Kūh-e Zardar</alternateName>
 <timezone dstOffset="4.5" gmtOffset="3.5">Asia/Tehran</timezone>
 <bbox>
 <west>21.72792</west>
@@ -141,10 +140,14 @@ my $search_exp = [
     'adminCode2' => '277',
     'adminName1' => 'Texas',
     'adminName2' => 'Lamar County',
-    'alternateName' => {
-      'content' => 'http://en.wikipedia.org/wiki/Roxton%2C_Texas',
-      'lang' => 'link'
-    },
+    'alternateName' => [ {
+        'content' => 'http://en.wikipedia.org/wiki/Roxton%2C_Texas',
+        'lang' => 'link'
+      },{
+        'content' => '75477',
+        'lang'    => 'post',
+      }
+    ],
     'alternateNames' => {},
     'asciiName' => 'Roxton',
     'bbox' => {

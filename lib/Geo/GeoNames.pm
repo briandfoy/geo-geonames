@@ -309,7 +309,7 @@ sub _parse_xml_result {
 			next if (ref($list) ne "HASH");
 			foreach my $attribute (%{$list}) {
 				next if !defined($list->{$attribute}->[0]);
-				$result[$i]->{$attribute} = $list->{$attribute}->[0];
+				$result[$i]->{$attribute} = (scalar @{$list->{$attribute}} == 1 ? $list->{$attribute}->[0] : $list->{$attribute});
 				}
 			$i++;
 			}
