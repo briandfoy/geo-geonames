@@ -1,5 +1,9 @@
 Revision history for Perl module Geo::GeoNames
 
+1.07 - 2016-03-10
+    * Nicolas Mendoza
+    * Try to solve issue with JSON + a custom LWP::UserAgent
+
 1.06 - 2015-12-07
     * Nicolas Mendoza
     * alternateName and other multi-element xml values were simply trimmed so 
