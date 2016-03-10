@@ -5,6 +5,8 @@ use warnings;
 
 use_ok('Geo::GeoNames');
 
+use utf8;
+
 ok ! eval { Geo::GeoNames->new( ua => undef, username => 'fakename' ); }, 'Bad user-agent should croak: ' . $@;
 ok ! eval { Geo::GeoNames->new( ua => {}, username => 'fakename' ); }, 'Bad user-agent should croak: ' . $@;
 ok ! eval { Geo::GeoNames->new( ua => IO::Handle->new, username => 'fakename' ); }, 'Bad user-agent should croak: ' . $@;
@@ -33,10 +35,17 @@ subtest 'LWP::UserAgent' => sub {
 
         skip 'Need $ENV{GEONAMES_USER} to test actual results work with provided LWP::UserAgent', 3 unless $ENV{GEONAMES_USER};
         my $geo = Geo::GeoNames->new( ua => $lwp, username => $ENV{GEONAMES_USER} );
-        my $result = $geo->search( 'q' => "Oslo", maxRows => 3, style => "FULL" );
-        ok( defined $result              , 'q => Oslo' );
-        ok( ref $result eq ref []        , 'result is array ref' );
-        ok( exists($result->[0]->{name}) , 'name exists in result' );
+
+        my $result = $geo->search( 'q' => "Ørebro", maxRows => 3, style => "FULL" );
+        ok( defined $result               , 'q => Ørebro' );
+        ok( ref $result eq ref []         , 'result is array ref (xml)' );
+        is( $result->[0]->{name}, 'Örebro', 'name exists in result (xml)' );
+
+        my $result = $geo->search( 'q' => "Ørebro", maxRows => 3, style => "FULL", type => 'json' );
+        ok( defined $result               , 'q => Ørebro' );
+        ok( ref $result eq ref {}         , 'result is array ref (json)' );
+#        warn Dumper($result);
+        is( $result->{geonames}->[0]->{name}, 'Örebro', 'name exists in result (json)' );
     };
 };
 

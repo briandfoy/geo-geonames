@@ -10,7 +10,7 @@ use Scalar::Util qw/blessed/;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 our %searches = (
 	cities                              => 'cities?',
@@ -321,7 +321,7 @@ sub _parse_json_result {
 	require JSON;
 	my( $self, $geonamesresponse ) = @_;
 	my @result;
-	return JSON->new->decode($geonamesresponse);
+	return JSON->new->utf8->decode($geonamesresponse);
 	}
 
 sub _parse_text_result {
@@ -353,7 +353,7 @@ sub _do_search {
 		$body = $response->body;
 		}
 	else {
-		$body = $response->decoded_content;
+		$body = $response->content;
 	}
 
 	if($mime_type =~ m(\Atext/xml;?) ) {

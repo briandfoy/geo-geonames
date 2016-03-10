@@ -10,9 +10,9 @@ use utf8;
 
 my $g = Geo::GeoNames->new( username => 'fakeusername');
 
-my $data = do { binmode DATA, 'utf8'; local $/; <DATA> };
+my $data = do { binmode DATA, 'bytes'; local $/; <DATA> };
 my $json;
-ok eval { $json = $g->_parse_json_result($data) }, 'Parsing JSON does not die';
+ok eval { $json = $g->_parse_json_result($data) }, 'Parsing JSON does not die' or diag $@;
 
 is @{ $json->{geonames} }, 24, 'Correct amount of entries';
 
