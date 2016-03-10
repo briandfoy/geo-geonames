@@ -169,7 +169,7 @@ subtest 'earthquakes' => sub {
 	};
 
 subtest 'get' => sub {
-	my $result = $geo->get( geonameId => 1 );
+	my $result = $geo->get( geonameId => 3143244 );
 	ok( defined $result                   , 'get' );
 	my $get = $result;
 	ok( ref $get eq ref []             , 'result is array ref' );
