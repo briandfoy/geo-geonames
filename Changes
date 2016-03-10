@@ -1,5 +1,9 @@
 Revision history for Perl module Geo::GeoNames
 
+1.08 - 2016-03-10
+    * Nicolas Mendoza
+    * None
+
 1.07 - 2016-03-10
     * Nicolas Mendoza
     * Try to solve issue with JSON + a custom LWP::UserAgent
