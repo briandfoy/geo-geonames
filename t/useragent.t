@@ -41,11 +41,10 @@ subtest 'LWP::UserAgent' => sub {
         ok( ref $result eq ref []         , 'result is array ref (xml)' );
         is( $result->[0]->{name}, 'Örebro', 'name exists in result (xml)' );
 
-        my $result = $geo->search( 'q' => "Ørebro", maxRows => 3, style => "FULL", type => 'json' );
-        ok( defined $result               , 'q => Ørebro' );
-        ok( ref $result eq ref {}         , 'result is array ref (json)' );
-#        warn Dumper($result);
-        is( $result->{geonames}->[0]->{name}, 'Örebro', 'name exists in result (json)' );
+        my $result2 = $geo->search( 'q' => "Ørebro", maxRows => 3, style => "FULL", type => 'json' );
+        ok( defined $result2               , 'q => Ørebro' );
+        ok( ref $result2 eq ref {}         , 'result is array ref (json)' );
+        is( $result2->{geonames}->[0]->{name}, 'Örebro', 'name exists in result (json)' );
     };
 };
 
