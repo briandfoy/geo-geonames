@@ -25,7 +25,7 @@ subtest bad_name => sub {
 			);
 		}
 	else {
-		like( $string, qr/does not exist/, 'Fake username gives warning' );
+		like( $string, qr/(GeoNames error: invalid username|does not exist)/, 'Fake username gives warning' );
 		}
 	};
 	
