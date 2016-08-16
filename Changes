@@ -3,6 +3,7 @@ Revision history for Perl module Geo::GeoNames
 1.10 - 2016-08-16
     * Nicolas Mendoza
 	* Add support for hierarchy API
+	* Happy CPAN-day!
 
 1.09 - 2016-03-11
     * Nicolas Mendoza
