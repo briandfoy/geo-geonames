@@ -10,7 +10,7 @@ use Scalar::Util qw/blessed/;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.08';
+our $VERSION = '1.10';
 
 our %searches = (
 	cities                              => 'cities?',
@@ -31,6 +31,7 @@ our %searches = (
 	wikipedia_bounding_box              => 'wikipediaBoundingBox?',
 	wikipedia_search                    => 'wikipediaSearch?',
 	get                                 => 'get?',
+	hierarchy                           => 'hierarchy?',
 	);
 
 #	r	= required
@@ -188,6 +189,11 @@ our %valid_parameters = (
         lang      => 'o',
         style     => 'o',
         username  => 'r',
+        },
+    hierarchy => {
+        geonameId => 'r',
+        username  => 'r',
+        style     => 'o',
         },
 	);
 
@@ -799,7 +805,7 @@ http://www.geonames.org/export
 
 Returns information about a given place based on a geonameId.
 
-	geonamesId => $geonamesId
+	geonameId  => $geonameId
 	lang       => $lang
 	style      => $style (Seems to be ignored, although documented)
 
@@ -807,6 +813,20 @@ B<geonamesId> must be supplied to this function. B<lang> and B<style> are option
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
+
+=back
+
+=item hiearchy(arg => $arg)
+
+Returns all GeoNames higher up in the hierarchy of a place based on a geonameId.
+
+    geonameId => $geonameId
+    style     => $style (Not documented, but seems to be respected)
+
+B<geonamesId> must be supplied to this function. B<style> is optional.
+
+For a thorough description of the arguments, see
+http://www.geonames.org/export/place-hierarchy.html#hierarchy
 
 =back
 

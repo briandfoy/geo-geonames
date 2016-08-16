@@ -1,19 +1,27 @@
 Revision history for Perl module Geo::GeoNames
 
-1.08 - 2016-03-10
+1.10 - 2016-08-16
     * Nicolas Mendoza
-    * None
+	* Add support for hierarchy API
+
+1.09 - 2016-03-11
+    * Nicolas Mendoza
+	* Some CPAN-testers get other kind of error messages from Geonames
+
+1.08 - 2016-03-10
+	* Nicolas Mendoza
+	* None
 
 1.07 - 2016-03-10
-    * Nicolas Mendoza
-    * Try to solve issue with JSON + a custom LWP::UserAgent
+	* Nicolas Mendoza
+	* Try to solve issue with JSON + a custom LWP::UserAgent
 
 1.06 - 2015-12-07
-    * Nicolas Mendoza
-    * alternateName and other multi-element xml values were simply trimmed so 
-      that only one element survived.
-      This change should return them as an arrayref, but still return a single
-      entry as a hashref.
+	* Nicolas Mendoza
+	* alternateName and other multi-element xml values were simply trimmed so 
+	that only one element survived.
+	This change should return them as an arrayref, but still return a single
+	entry as a hashref.
 
 1.05 - 2015-11-26
 	* Nicolas Mendoza
