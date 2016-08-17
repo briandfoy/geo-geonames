@@ -814,8 +814,6 @@ B<geonamesId> must be supplied to this function. B<lang> and B<style> are option
 For a thorough description of the arguments, see
 http://www.geonames.org/export
 
-=back
-
 =item hiearchy(arg => $arg)
 
 Returns all GeoNames higher up in the hierarchy of a place based on a geonameId.
