@@ -34,11 +34,11 @@ our %searches = (
 	hierarchy                           => 'hierarchy?',
 	);
 
-#	r	= required
-#	o	= optional
-#	rc	= required - only one of the fields marked with rc is allowed. At least one must be present
-#	om	= optional, multiple entries allowed
-#	d	= deprecated - will be removed in later versions
+#   r   = required
+#   o   = optional
+#   rc  = required - only one of the fields marked with rc is allowed. At least one must be present
+#   om  = optional, multiple entries allowed
+#   d   = deprecated - will be removed in later versions
 our %valid_parameters = (
 	search => {
 		'q'    => 'rc',
@@ -186,17 +186,17 @@ our %valid_parameters = (
 		maxRows         => 'o',
 		username        => 'r',
 		},
-    get => {
-        geonameId => 'r',
-        lang      => 'o',
-        style     => 'o',
-        username  => 'r',
-        },
-    hierarchy => {
-        geonameId => 'r',
-        username  => 'r',
-        style     => 'o',
-        },
+	get => {
+		geonameId => 'r',
+		lang      => 'o',
+		style     => 'o',
+		username  => 'r',
+		},
+	hierarchy => {
+		geonameId => 'r',
+		username  => 'r',
+		style     => 'o',
+		},
 	);
 
 sub new {
@@ -212,8 +212,8 @@ HERE
 	$self->username( $hash{username} );
 	$self->url( $hash{url} // $self->default_url );
 
-    croak 'Illegal ua object, needs either a Mojo::UserAgent or an LWP::UserAgent derived object'
-        if exists $hash{ua} && !(ref $hash{ua} && blessed($hash{ua}) && ( $hash{ua}->isa('Mojo::UserAgent') || $hash{ua}->isa('LWP::UserAgent') ) );
+	croak 'Illegal ua object, needs either a Mojo::UserAgent or an LWP::UserAgent derived object'
+	   if exists $hash{ua} && !(ref $hash{ua} && blessed($hash{ua}) && ( $hash{ua}->isa('Mojo::UserAgent') || $hash{ua}->isa('LWP::UserAgent') ) );
 	$self->ua($hash{ua} || $self->default_ua );
 
 	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
@@ -243,7 +243,7 @@ sub default_ua {
 	my $ua = Mojo::UserAgent->new;
 	$ua->on( error => sub { carp "Can't get request" } );
 	$ua;
-}
+	}
 sub default_url { 'http://api.geonames.org' }
 
 sub url {
@@ -341,7 +341,7 @@ sub _parse_text_result {
 
 sub _request {
 	my( $self, $request_url ) = @_;
-	
+
 	my $res = $self->{ua}->get( $request_url );
 	return $res->can('res') ? $res->res : $res;
 	}
@@ -898,7 +898,7 @@ at https://github.com/briandfoy/geo-geonames
 
 Per Henrik Johansen, C<< <per.henrik.johansen@gmail.com> >>.
 
-Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >> 
+Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >>
 and Nicolas Mendoza, C<< <mendoza@pvv.ntnu.no> >>
 
 =head1 COPYRIGHT AND LICENSE
