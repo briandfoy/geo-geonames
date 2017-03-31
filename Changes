@@ -1,5 +1,10 @@
 Revision history for Perl module Geo::GeoNames
 
+1.101 2017-03-31T20:17:31Z
+	* Update the docs for GitHub Issues:
+	+ call things methods (https://github.com/briandfoy/geo-geonames/issues/13)
+	+ use GitHub as the issue tracker (https://github.com/briandfoy/geo-geonames/issues/12)
+
 1.10 - 2016-08-16
     * Nicolas Mendoza
 	* Add support for hierarchy API
