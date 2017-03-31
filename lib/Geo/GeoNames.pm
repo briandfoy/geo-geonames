@@ -99,6 +99,8 @@ our %valid_parameters = (
 		radius    => 'o',
 		style    => 'o',
 		maxRows    => 'o',
+        lang => 'o',
+        cities => 'o',
 		username => 'r',
 		},
 	find_nearest_address => {
@@ -813,8 +815,6 @@ B<geonamesId> must be supplied to this function. B<lang> and B<style> are option
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
-
-=back
 
 =item hiearchy(arg => $arg)
 
