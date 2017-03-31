@@ -399,7 +399,7 @@ sub AUTOLOAD {
 	my $name = our $AUTOLOAD;
 	$name =~ s/.*://;
 
-	unless (exists $self->{_functions}->{$name}) {
+	unless (exists $self->{_methods}->{$name}) {
 		croak "No such method '$AUTOLOAD'";
 		}
 
@@ -506,7 +506,7 @@ url. With no arguments, return the url.
 
 =item geocode( $placename )
 
-This function is just an easy access to search. It is the same as
+This method is just an easy access to search. It is the same as
 saying:
 
 	$geo->search( q => $placename );
@@ -548,7 +548,7 @@ as follows:
 	orderby         => $orderby
 
 One, and only one, of B<q>, B<name>, B<name_equals>, or B<name_startsWith> must be
-supplied to this function.
+supplied to this method.
 
 fclass is deprecated.
 
@@ -566,8 +566,7 @@ names for B<arg> are as follows:
 	style   => $style
 	maxRows => $maxrows
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
 http://www.geonames.org/export
@@ -580,7 +579,7 @@ for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
 http://www.geonames.org/maps/reverse-geocoder.html
@@ -595,8 +594,7 @@ names for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
 http://www.geonames.org/maps/reverse-geocoder.html
@@ -611,8 +609,7 @@ for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
 http://www.geonames.org/maps/reverse-geocoder.html
@@ -631,7 +628,7 @@ are as follows:
 	style      => $style
 
 One, and only one, of B<postalcode> or B<placename> must be supplied
-to this function.
+to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -647,15 +644,14 @@ Reverse lookup for postalcodes. Valid names for B<arg> are as follows:
 	style   => $style
 	country => $country
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
 
 =item postalcode_country_info
 
-Returns a list of all postalcodes found on GeoNames. This function
+Returns a list of all postalcodes found on GeoNames. This method
 takes no arguments.
 
 =item country_info(arg => $arg)
@@ -680,8 +676,7 @@ follows:
 	lang    => $lang
 	country => $country
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -696,8 +691,7 @@ follows:
 	radius     => $radius
 	maxRows    => $maxrows
 
-Both B<postalcode> and B<country> must be supplied to
-this function.
+Both B<postalcode> and B<country> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -712,8 +706,7 @@ follows:
 	lang    => $lang
 	title   => $title
 
-B<q> must be supplied to
-this function.
+B<q> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -730,8 +723,7 @@ follows:
 	lang    => $lang
 	maxRows => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -748,8 +740,7 @@ Valid names for B<arg> are as follows:
 	lang    => $lang
 	maxRows => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -764,8 +755,7 @@ as follows:
 	radius => $radius
 	lang   => $lang
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -783,8 +773,7 @@ Valid names for B<arg> are as follows:
 	minMagnitude => $minmagnitude
 	maxRows      => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -797,8 +786,7 @@ as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -811,7 +799,7 @@ Returns information about a given place based on a geonameId.
 	lang       => $lang
 	style      => $style (Seems to be ignored, although documented)
 
-B<geonamesId> must be supplied to this function. B<lang> and B<style> are optional.
+B<geonamesId> must be supplied to this method. B<lang> and B<style> are optional.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export
@@ -823,7 +811,7 @@ Returns all GeoNames higher up in the hierarchy of a place based on a geonameId.
     geonameId => $geonameId
     style     => $style (Not documented, but seems to be respected)
 
-B<geonamesId> must be supplied to this function. B<style> is optional.
+B<geonamesId> must be supplied to this method. B<style> is optional.
 
 For a thorough description of the arguments, see
 http://www.geonames.org/export/place-hierarchy.html#hierarchy
