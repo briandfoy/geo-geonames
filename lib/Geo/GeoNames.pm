@@ -99,8 +99,8 @@ our %valid_parameters = (
 		radius    => 'o',
 		style    => 'o',
 		maxRows    => 'o',
-        lang => 'o',
-        cities => 'o',
+		lang => 'o',
+		cities => 'o',
 		username => 'r',
 		},
 	find_nearest_address => {
