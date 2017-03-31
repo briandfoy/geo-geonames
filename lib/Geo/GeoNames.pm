@@ -399,7 +399,7 @@ sub AUTOLOAD {
 	my $name = our $AUTOLOAD;
 	$name =~ s/.*://;
 
-	unless (exists $self->{_methods}->{$name}) {
+	unless (exists $self->{_functions}->{$name}) {
 		croak "No such method '$AUTOLOAD'";
 		}
 
