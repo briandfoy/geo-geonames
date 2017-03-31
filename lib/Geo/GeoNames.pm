@@ -869,8 +869,8 @@ encoded, and all data received from the webservices are also UTF-8
 encoded. So make sure that strings are encoded/decoded based on the
 correct encoding.
 
-Please report any bugs found or feature requests to
-https://rt.cpan.org//Dist/Display.html?Queue=geo-geonames
+Please report any bugs found or feature requests through GitHub issues
+L<https://github.com/briandfoy/geo-geonames/issues>
 
 =head1 SEE ALSO
 
