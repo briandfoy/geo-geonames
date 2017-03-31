@@ -445,18 +445,18 @@ access to the free web service:
 
 =item * Get an account
 
-Go to http://www.geonames.org/login
+Go to L<http://www.geonames.org/login>
 
 =item * Respond to the email
 
 =item * Login and enable your account for free access
 
-http://www.geonames.org/enablefreewebservice
+L<http://www.geonames.org/enablefreewebservice>
 
 =back
 
 Provides a perl interface to the webservices found at
-http://api.geonames.org. That is, given a given placename or
+L<http://api.geonames.org>. That is, given a given placename or
 postalcode, the module will look it up and return more information
 (longitude, lattitude, etc) for the given placename or postalcode.
 Wikipedia lookups are also supported. If more than one match is found,
@@ -473,7 +473,7 @@ a list of locations will be returned.
 
 Constructor for Geo::GeoNames. It returns a reference to an
 Geo::GeoNames object. You may also pass the url of the webservices to
-use. The default value is http://api.geonames.org and is the only url,
+use. The default value is L<http://api.geonames.org> and is the only url,
 to my knowledge, that provides the services needed by this module. The
 username parameter is required.
 
@@ -553,7 +553,7 @@ supplied to this method.
 fclass is deprecated.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export/geonames-search.html
+L<http://www.geonames.org/export/geonames-search.html>
 
 =item find_nearby_placename( arg => $arg )
 
@@ -569,7 +569,7 @@ names for B<arg> are as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearest_address(arg => $arg)
 
@@ -582,7 +582,7 @@ for B<arg> are as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -597,7 +597,7 @@ names for B<arg> are as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -612,7 +612,7 @@ for B<arg> are as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -631,7 +631,7 @@ One, and only one, of B<postalcode> or B<placename> must be supplied
 to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_postalcodes(arg => $arg)
 
@@ -647,7 +647,7 @@ Reverse lookup for postalcodes. Valid names for B<arg> are as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item postalcode_country_info
 
@@ -662,7 +662,7 @@ Returns country information. Valid names for B<arg> are as follows:
 	lang    => $lang
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_wikipedia(arg => $arg)
 
@@ -679,7 +679,7 @@ follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_wikipediaby_postalcode(arg => $arg)
 
@@ -694,7 +694,7 @@ follows:
 Both B<postalcode> and B<country> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item wikipedia_search(arg => $arg)
 
@@ -709,7 +709,7 @@ follows:
 B<q> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item wikipedia_bounding_box(arg => $arg)
 
@@ -726,7 +726,7 @@ follows:
 B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item cities(arg => $arg)
 
@@ -743,7 +743,7 @@ Valid names for B<arg> are as follows:
 B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item country_code(arg => $arg)
 
@@ -758,7 +758,7 @@ as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item earthquakes(arg => $arg)
 
@@ -776,7 +776,7 @@ Valid names for B<arg> are as follows:
 B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_weather(arg => $arg)
 
@@ -789,7 +789,7 @@ as follows:
 Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item get(arg => $arg)
 
@@ -802,7 +802,7 @@ Returns information about a given place based on a geonameId.
 B<geonamesId> must be supplied to this method. B<lang> and B<style> are optional.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item hiearchy(arg => $arg)
 
@@ -814,7 +814,7 @@ Returns all GeoNames higher up in the hierarchy of a place based on a geonameId.
 B<geonamesId> must be supplied to this method. B<style> is optional.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export/place-hierarchy.html#hierarchy
+L<http://www.geonames.org/export/place-hierarchy.html#hierarchy>
 
 =back
 
@@ -874,13 +874,18 @@ L<https://github.com/briandfoy/geo-geonames/issues>
 
 =head1 SEE ALSO
 
-http://www.geonames.org/export
-http://www.geonames.org/export/ws-overview.html
+=over 4
+
+=item * L<http://www.geonames.org/export>
+
+=item * L<http://www.geonames.org/export/ws-overview.html>
+
+=back
 
 =head1 SOURCE AVAILABILITY
 
 The source code for this module is available from Github
-at https://github.com/briandfoy/geo-geonames
+at L<https://github.com/briandfoy/geo-geonames>
 
 =head1 AUTHOR
 
@@ -893,8 +898,6 @@ and Nicolas Mendoza, C<< <mendoza@pvv.ntnu.no> >>
 
 Copyright (C) 2007-2008 by Per Henrik Johansen
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
-at your option, any later version of Perl 5 you may have available.
+This library is available under the Artistic License 2.0.
 
 =cut
