@@ -10,7 +10,7 @@ use Scalar::Util qw/blessed/;
 
 use vars qw($DEBUG $CACHE);
 
-our $VERSION = '1.10';
+our $VERSION = '1.101';
 
 our %searches = (
 	cities                              => 'cities?',
@@ -34,11 +34,11 @@ our %searches = (
 	hierarchy                           => 'hierarchy?',
 	);
 
-#	r	= required
-#	o	= optional
-#	rc	= required - only one of the fields marked with rc is allowed. At least one must be present
-#	om	= optional, multiple entries allowed
-#	d	= deprecated - will be removed in later versions
+#   r   = required
+#   o   = optional
+#   rc  = required - only one of the fields marked with rc is allowed. At least one must be present
+#   om  = optional, multiple entries allowed
+#   d   = deprecated - will be removed in later versions
 our %valid_parameters = (
 	search => {
 		'q'    => 'rc',
@@ -99,6 +99,8 @@ our %valid_parameters = (
 		radius    => 'o',
 		style    => 'o',
 		maxRows    => 'o',
+		lang => 'o',
+		cities => 'o',
 		username => 'r',
 		},
 	find_nearest_address => {
@@ -184,17 +186,17 @@ our %valid_parameters = (
 		maxRows         => 'o',
 		username        => 'r',
 		},
-    get => {
-        geonameId => 'r',
-        lang      => 'o',
-        style     => 'o',
-        username  => 'r',
-        },
-    hierarchy => {
-        geonameId => 'r',
-        username  => 'r',
-        style     => 'o',
-        },
+	get => {
+		geonameId => 'r',
+		lang      => 'o',
+		style     => 'o',
+		username  => 'r',
+		},
+	hierarchy => {
+		geonameId => 'r',
+		username  => 'r',
+		style     => 'o',
+		},
 	);
 
 sub new {
@@ -210,8 +212,8 @@ HERE
 	$self->username( $hash{username} );
 	$self->url( $hash{url} // $self->default_url );
 
-    croak 'Illegal ua object, needs either a Mojo::UserAgent or an LWP::UserAgent derived object'
-        if exists $hash{ua} && !(ref $hash{ua} && blessed($hash{ua}) && ( $hash{ua}->isa('Mojo::UserAgent') || $hash{ua}->isa('LWP::UserAgent') ) );
+	croak 'Illegal ua object, needs either a Mojo::UserAgent or an LWP::UserAgent derived object'
+	   if exists $hash{ua} && !(ref $hash{ua} && blessed($hash{ua}) && ( $hash{ua}->isa('Mojo::UserAgent') || $hash{ua}->isa('LWP::UserAgent') ) );
 	$self->ua($hash{ua} || $self->default_ua );
 
 	(exists($hash{debug})) ? $DEBUG = $hash{debug} : 0;
@@ -241,7 +243,7 @@ sub default_ua {
 	my $ua = Mojo::UserAgent->new;
 	$ua->on( error => sub { carp "Can't get request" } );
 	$ua;
-}
+	}
 sub default_url { 'http://api.geonames.org' }
 
 sub url {
@@ -339,7 +341,7 @@ sub _parse_text_result {
 
 sub _request {
 	my( $self, $request_url ) = @_;
-	
+
 	my $res = $self->{ua}->get( $request_url );
 	return $res->can('res') ? $res->res : $res;
 	}
@@ -443,18 +445,18 @@ access to the free web service:
 
 =item * Get an account
 
-Go to http://www.geonames.org/login
+Go to L<http://www.geonames.org/login>
 
 =item * Respond to the email
 
 =item * Login and enable your account for free access
 
-http://www.geonames.org/enablefreewebservice
+L<http://www.geonames.org/enablefreewebservice>
 
 =back
 
 Provides a perl interface to the webservices found at
-http://api.geonames.org. That is, given a given placename or
+L<http://api.geonames.org>. That is, given a given placename or
 postalcode, the module will look it up and return more information
 (longitude, lattitude, etc) for the given placename or postalcode.
 Wikipedia lookups are also supported. If more than one match is found,
@@ -471,7 +473,7 @@ a list of locations will be returned.
 
 Constructor for Geo::GeoNames. It returns a reference to an
 Geo::GeoNames object. You may also pass the url of the webservices to
-use. The default value is http://api.geonames.org and is the only url,
+use. The default value is L<http://api.geonames.org> and is the only url,
 to my knowledge, that provides the services needed by this module. The
 username parameter is required.
 
@@ -504,7 +506,7 @@ url. With no arguments, return the url.
 
 =item geocode( $placename )
 
-This function is just an easy access to search. It is the same as
+This method is just an easy access to search. It is the same as
 saying:
 
 	$geo->search( q => $placename );
@@ -546,12 +548,12 @@ as follows:
 	orderby         => $orderby
 
 One, and only one, of B<q>, B<name>, B<name_equals>, or B<name_startsWith> must be
-supplied to this function.
+supplied to this method.
 
 fclass is deprecated.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export/geonames-search.html
+L<http://www.geonames.org/export/geonames-search.html>
 
 =item find_nearby_placename( arg => $arg )
 
@@ -564,11 +566,10 @@ names for B<arg> are as follows:
 	style   => $style
 	maxRows => $maxrows
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearest_address(arg => $arg)
 
@@ -578,10 +579,10 @@ for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -593,11 +594,10 @@ names for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -609,11 +609,10 @@ for B<arg> are as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough descriptions of the arguments, see
-http://www.geonames.org/maps/reverse-geocoder.html
+L<http://www.geonames.org/maps/reverse-geocoder.html>
 
 US only.
 
@@ -629,10 +628,10 @@ are as follows:
 	style      => $style
 
 One, and only one, of B<postalcode> or B<placename> must be supplied
-to this function.
+to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_postalcodes(arg => $arg)
 
@@ -645,15 +644,14 @@ Reverse lookup for postalcodes. Valid names for B<arg> are as follows:
 	style   => $style
 	country => $country
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item postalcode_country_info
 
-Returns a list of all postalcodes found on GeoNames. This function
+Returns a list of all postalcodes found on GeoNames. This method
 takes no arguments.
 
 =item country_info(arg => $arg)
@@ -664,7 +662,7 @@ Returns country information. Valid names for B<arg> are as follows:
 	lang    => $lang
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_wikipedia(arg => $arg)
 
@@ -678,11 +676,10 @@ follows:
 	lang    => $lang
 	country => $country
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_wikipediaby_postalcode(arg => $arg)
 
@@ -694,11 +691,10 @@ follows:
 	radius     => $radius
 	maxRows    => $maxrows
 
-Both B<postalcode> and B<country> must be supplied to
-this function.
+Both B<postalcode> and B<country> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item wikipedia_search(arg => $arg)
 
@@ -710,11 +706,10 @@ follows:
 	lang    => $lang
 	title   => $title
 
-B<q> must be supplied to
-this function.
+B<q> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item wikipedia_bounding_box(arg => $arg)
 
@@ -728,11 +723,10 @@ follows:
 	lang    => $lang
 	maxRows => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item cities(arg => $arg)
 
@@ -746,11 +740,10 @@ Valid names for B<arg> are as follows:
 	lang    => $lang
 	maxRows => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item country_code(arg => $arg)
 
@@ -762,11 +755,10 @@ as follows:
 	radius => $radius
 	lang   => $lang
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item earthquakes(arg => $arg)
 
@@ -781,11 +773,10 @@ Valid names for B<arg> are as follows:
 	minMagnitude => $minmagnitude
 	maxRows      => $maxrows
 
-B<south>, B<north>, B<east>, and B<west> and must be supplied to
-this function.
+B<south>, B<north>, B<east>, and B<west> and must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item find_nearby_weather(arg => $arg)
 
@@ -795,11 +786,10 @@ as follows:
 	lat => $lat
 	lng => $lng
 
-Both B<lat> and B<lng> must be supplied to
-this function.
+Both B<lat> and B<lng> must be supplied to this method.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item get(arg => $arg)
 
@@ -809,10 +799,10 @@ Returns information about a given place based on a geonameId.
 	lang       => $lang
 	style      => $style (Seems to be ignored, although documented)
 
-B<geonamesId> must be supplied to this function. B<lang> and B<style> are optional.
+B<geonamesId> must be supplied to this method. B<lang> and B<style> are optional.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export
+L<http://www.geonames.org/export>
 
 =item hiearchy(arg => $arg)
 
@@ -821,10 +811,10 @@ Returns all GeoNames higher up in the hierarchy of a place based on a geonameId.
     geonameId => $geonameId
     style     => $style (Not documented, but seems to be respected)
 
-B<geonamesId> must be supplied to this function. B<style> is optional.
+B<geonamesId> must be supplied to this method. B<style> is optional.
 
 For a thorough description of the arguments, see
-http://www.geonames.org/export/place-hierarchy.html#hierarchy
+L<http://www.geonames.org/export/place-hierarchy.html#hierarchy>
 
 =back
 
@@ -879,32 +869,35 @@ encoded, and all data received from the webservices are also UTF-8
 encoded. So make sure that strings are encoded/decoded based on the
 correct encoding.
 
-Please report any bugs found or feature requests to
-https://rt.cpan.org//Dist/Display.html?Queue=geo-geonames
+Please report any bugs found or feature requests through GitHub issues
+L<https://github.com/briandfoy/geo-geonames/issues>
 
 =head1 SEE ALSO
 
-http://www.geonames.org/export
-http://www.geonames.org/export/ws-overview.html
+=over 4
+
+=item * L<http://www.geonames.org/export>
+
+=item * L<http://www.geonames.org/export/ws-overview.html>
+
+=back
 
 =head1 SOURCE AVAILABILITY
 
 The source code for this module is available from Github
-at https://github.com/briandfoy/geo-geonames
+at L<https://github.com/briandfoy/geo-geonames>
 
 =head1 AUTHOR
 
 Per Henrik Johansen, C<< <per.henrik.johansen@gmail.com> >>.
 
-Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >> 
+Currently maintained by brian d foy, C<< <brian.d.foy@gmail.com> >>
 and Nicolas Mendoza, C<< <mendoza@pvv.ntnu.no> >>
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2007-2008 by Per Henrik Johansen
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
-at your option, any later version of Perl 5 you may have available.
+This library is available under the Artistic License 2.0.
 
 =cut
