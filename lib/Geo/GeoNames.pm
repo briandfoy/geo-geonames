@@ -383,7 +383,11 @@ sub _do_search {
 			}
 		}
 
-	carp "Invalid mime type [$mime_type]. Maybe you aren't connected.";
+	if($mime_type eq 'text/plain') {
+		carp 'Invalid mime type [text/plain]. ', $response->content();
+	} else {
+		carp "Invalid mime type [$mime_type]. Maybe you aren't connected.";
+	}
 
 	return [];
 	}
