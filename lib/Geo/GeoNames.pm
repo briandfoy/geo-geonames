@@ -918,7 +918,7 @@ and Nicolas Mendoza, C<< <mendoza@pvv.ntnu.no> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2007-2008 by Per Henrik Johansen
+Copyright © 2007-2021 by Per Henrik Johansen
 
 This library is available under the Artistic License 2.0.
 
