@@ -71,3 +71,6 @@
 \.releaserc
 \.lwpcookies
 Geo-.*
+\bMANIFEST\s\d
+\bChanges\s\d
+
