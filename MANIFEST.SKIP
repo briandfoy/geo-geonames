@@ -75,3 +75,4 @@ Geo-.*
 \.icloud$
 \A\.github\b
 
+\.gitattributes\b
